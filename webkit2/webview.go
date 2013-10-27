@@ -9,6 +9,7 @@ package webkit2
 import "C"
 
 import (
+	"github.com/sqs/gojs"
 	"github.com/sqs/gotk3/glib"
 	"github.com/sqs/gotk3/gtk"
 	"unsafe"
@@ -93,6 +94,15 @@ func (v *WebView) Title() string {
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#webkit-web-view-get-uri.
 func (v *WebView) URI() string {
 	return C.GoString((*C.char)(C.webkit_web_view_get_uri(v.webView)))
+}
+
+// JavaScriptGlobalContext returns the global JavaScript context used by
+// WebView.
+//
+// See also: webkit_web_view_get_javascript_global_context at
+// http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#webkit-web-view-get-javascript-global-context
+func (v *WebView) JavaScriptGlobalContext() *gojs.Context {
+	return gojs.NewContextFrom(gojs.RawContext(C.webkit_web_view_get_javascript_global_context(v.webView)))
 }
 
 // Destroy destroys the WebView's corresponding GtkWidget and marks its internal

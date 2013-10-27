@@ -189,3 +189,10 @@ func TestWebView_Settings(t *testing.T) {
 
 	webView.Settings()
 }
+
+func TestWebView_JavaScriptGlobalContext(t *testing.T) {
+	webView := NewWebView()
+	defer webView.Destroy()
+
+	webView.JavaScriptGlobalContext()
+}
