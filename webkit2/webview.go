@@ -29,9 +29,21 @@ type WebView struct {
 // See also: webkit_web_view_new at
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#webkit-web-view-new.
 func NewWebView() *WebView {
-	w := C.webkit_web_view_new()
-	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(w))}
-	return &WebView{&gtk.Widget{glib.InitiallyUnowned{obj}}, C.to_WebKitWebView(w)}
+	return newWebView(C.webkit_web_view_new())
+}
+
+// NewWebViewWithContext creates a new WebView with the given WebContext and the
+// default WebViewGroup.
+//
+// See also: webkit_web_view_new_with_context at
+// http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#webkit-web-view-new-with-context.
+func NewWebViewWithContext(ctx *WebContext) *WebView {
+	return newWebView(C.webkit_web_view_new_with_context(ctx.webContext))
+}
+
+func newWebView(webViewWidget *C.GtkWidget) *WebView {
+	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(webViewWidget))}
+	return &WebView{&gtk.Widget{glib.InitiallyUnowned{obj}}, C.to_WebKitWebView(webViewWidget)}
 }
 
 // LoadURI requests loading of the specified URI string.
