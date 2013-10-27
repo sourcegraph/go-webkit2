@@ -33,3 +33,7 @@ func TestWebContext_CacheModel(t *testing.T) {
 		t.Errorf("want changed CacheModel == %d, got %d", wantCacheModel, cacheModel)
 	}
 }
+
+func TestWebContext_ClearCache(t *testing.T) {
+	DefaultWebContext().ClearCache()
+}

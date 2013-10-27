@@ -48,3 +48,11 @@ func (wc *WebContext) CacheModel() CacheModel {
 func (wc *WebContext) SetCacheModel(model CacheModel) {
 	C.webkit_web_context_set_cache_model(wc.webContext, C.WebKitCacheModel(model))
 }
+
+// ClearCache clears all resources currently cached.
+//
+// See also: webkit_web_context_clear_cache at
+// http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebContext.html#webkit-web-context-clear-cache.
+func (wc *WebContext) ClearCache() {
+	C.webkit_web_context_clear_cache(wc.webContext)
+}
