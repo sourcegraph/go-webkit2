@@ -1,15 +1,8 @@
 package webkit2
 
 import (
-	"github.com/sqs/gotk3/gtk"
-	"runtime"
 	"testing"
 )
-
-func init() {
-	runtime.LockOSThread()
-	gtk.Init(nil)
-}
 
 func TestDefaultWebContext(t *testing.T) {
 	DefaultWebContext()

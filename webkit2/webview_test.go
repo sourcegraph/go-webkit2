@@ -4,14 +4,8 @@ import (
 	"github.com/sqs/gotk3/glib"
 	"github.com/sqs/gotk3/gtk"
 	"net/http"
-	"runtime"
 	"testing"
 )
-
-func init() {
-	runtime.LockOSThread()
-	gtk.Init(nil)
-}
 
 func TestNewWebView(t *testing.T) {
 	webView := NewWebView()
