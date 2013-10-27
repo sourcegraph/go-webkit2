@@ -10,13 +10,12 @@ type Settings struct {
 	settings *C.WebKitSettings
 }
 
-// NewSettings creates a new Settings with default values.
+// newSettings creates a new Settings with default values.
 //
 // See also: webkit_settings_new at
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitSettings.html#webkit-settings-new.
-func NewSettings() *Settings {
-	s := C.webkit_settings_new()
-	return &Settings{&glib.Object{glib.ToGObject(unsafe.Pointer(s))}, s}
+func newSettings(settings *C.WebKitSettings) *Settings {
+	return &Settings{&glib.Object{glib.ToGObject(unsafe.Pointer(settings))}, settings}
 }
 
 // AutoLoadImages returns the "auto-load-images" property.

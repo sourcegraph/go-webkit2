@@ -1,17 +1,11 @@
 package webkit2
 
 import (
-	"github.com/sqs/gotk3/gtk"
 	"testing"
 )
 
-
-func TestNewSettings(t *testing.T) {
-	NewSettings()
-}
-
 func TestSettings_AutoLoadImages(t *testing.T) {
-	s := NewSettings()
+	s := NewWebView().Settings()
 
 	autoLoad := s.AutoLoadImages()
 	wantAutoLoad := !autoLoad
@@ -21,4 +15,7 @@ func TestSettings_AutoLoadImages(t *testing.T) {
 	if wantAutoLoad != autoLoad {
 		t.Errorf("want changed AutoLoad == %d, got %d", wantAutoLoad, autoLoad)
 	}
+
+	// Revert to original setting.
+	s.SetAutoLoadImages(!autoLoad)
 }

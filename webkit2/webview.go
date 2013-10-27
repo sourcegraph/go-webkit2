@@ -71,6 +71,14 @@ func (v *WebView) LoadHTML(content, baseURI string) {
 	C.webkit_web_view_load_html(v.webView, (*C.gchar)(C.CString(content)), (*C.gchar)(C.CString(baseURI)))
 }
 
+// Settings returns the current active settings of this WebView's WebViewGroup.
+//
+// See also: webkit_web_view_get_settings at
+// http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#webkit-web-view-get-settings.
+func (v *WebView) Settings() *Settings {
+	return newSettings(C.webkit_web_view_get_settings(v.webView))
+}
+
 // Title returns the current active title of the WebView.
 //
 // See also: webkit_web_view_get_title at

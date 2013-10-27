@@ -182,3 +182,10 @@ func TestWebView_URI(t *testing.T) {
 		t.Errorf("want URI %q, got %q", wantURI, gotURI)
 	}
 }
+
+func TestWebView_Settings(t *testing.T) {
+	webView := NewWebView()
+	defer webView.Destroy()
+
+	webView.Settings()
+}
