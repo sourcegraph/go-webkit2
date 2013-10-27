@@ -46,6 +46,14 @@ func newWebView(webViewWidget *C.GtkWidget) *WebView {
 	return &WebView{&gtk.Widget{glib.InitiallyUnowned{obj}}, C.to_WebKitWebView(webViewWidget)}
 }
 
+// Context returns the current WebContext of the WebView.
+//
+// See also: webkit_web_view_get_context at
+// http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#webkit-web-view-get-context.
+func (v *WebView) Context() *WebContext {
+	return &WebContext{C.webkit_web_view_get_context(v.webView)}
+}
+
 // LoadURI requests loading of the specified URI string.
 //
 // See also: webkit_web_view_load_uri at

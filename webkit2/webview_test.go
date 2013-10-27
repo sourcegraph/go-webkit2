@@ -24,6 +24,12 @@ func TestNewWebViewWithContext(t *testing.T) {
 	defer webView.Destroy()
 }
 
+func TestWebView_Context(t *testing.T) {
+	webView := NewWebView()
+	defer webView.Destroy()
+	webView.Context()
+}
+
 func TestWebView_LoadURI(t *testing.T) {
 	setup()
 	defer teardown()
