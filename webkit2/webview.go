@@ -9,6 +9,7 @@ package webkit2
 import "C"
 
 import (
+	"errors"
 	"github.com/sqs/gojs"
 	"github.com/sqs/gotk3/glib"
 	"github.com/sqs/gotk3/gtk"
@@ -103,6 +104,42 @@ func (v *WebView) URI() string {
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#webkit-web-view-get-javascript-global-context
 func (v *WebView) JavaScriptGlobalContext() *gojs.Context {
 	return gojs.NewContextFrom(gojs.RawContext(C.webkit_web_view_get_javascript_global_context(v.webView)))
+}
+
+// RunJavaScript runs script asynchronously in the context of the current page
+// in the WebView. Upon completion, resultCallback will be called with the
+// result of evaluating the script, or with an error encountered during
+// execution. To get the stack trace and other error logs, use the
+// ::console-message signal.
+//
+// See also: webkit_web_view_run_javascript at
+// http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#webkit-web-view-run-javascript
+func (v *WebView) RunJavaScript(script string, resultCallback func(result *gojs.Value, err error)) {
+	var cCallback C.GAsyncReadyCallback
+	var userData C.gpointer
+	var err error
+	if resultCallback != nil {
+		callback := func(result *C.GAsyncResult) {
+			var jserr *C.GError
+			jsResult := C.webkit_web_view_run_javascript_finish(v.webView, result, &jserr)
+			if jsResult == nil {
+				defer C.g_error_free(jserr)
+				msg := C.GoString((*C.char)(jserr.message))
+				resultCallback(nil, errors.New(msg))
+				return
+			}
+			ctxRaw := gojs.RawContext(C.webkit_javascript_result_get_global_context(jsResult))
+			jsValRaw := gojs.RawValue(C.webkit_javascript_result_get_value(jsResult))
+			ctx := gojs.NewContextFrom(ctxRaw)
+			jsVal := ctx.NewValueFrom(jsValRaw)
+			resultCallback(jsVal, nil)
+		}
+		cCallback, userData, err = newGAsyncReadyCallback(callback)
+		if err != nil {
+			panic(err)
+		}
+	}
+	C.webkit_web_view_run_javascript(v.webView, (*C.gchar)(C.CString(script)), nil, cCallback, userData)
 }
 
 // Destroy destroys the WebView's corresponding GtkWidget and marks its internal
