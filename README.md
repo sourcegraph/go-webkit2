@@ -33,6 +33,11 @@ sudo apt-get install libwebkit2gtk-3.0-dev
 sudo pacman -S webkitgtk
 ```
 
+#### Other platforms
+
+Make sure you install WebKitGTK+ 2, not version 1. After installation, you
+should have an include file that satisfies `#include <webkit2/webkit2.h>`.
+
 
 ## Usage
 
