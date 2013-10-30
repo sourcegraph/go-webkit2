@@ -29,7 +29,7 @@ func (s *Settings) AutoLoadImages() bool {
 // SetAutoLoadImages sets the "auto-load-images" property.
 //
 // See also: webkit_settings_get_auto_load_images at
-// http://webkitgtk.org/reference/webkit2gtk/stable/WebKitSettings.html#webkit-settings-get-auto-load-images
+// http://webkitgtk.org/reference/webkit2gtk/stable/WebKitSettings.html#webkit-settings-set-auto-load-images
 func (s *Settings) SetAutoLoadImages(autoLoad bool) {
 	C.webkit_settings_set_auto_load_images(s.settings, gboolean(autoLoad))
 }
