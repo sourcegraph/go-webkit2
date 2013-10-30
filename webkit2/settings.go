@@ -33,3 +33,19 @@ func (s *Settings) AutoLoadImages() bool {
 func (s *Settings) SetAutoLoadImages(autoLoad bool) {
 	C.webkit_settings_set_auto_load_images(s.settings, gboolean(autoLoad))
 }
+
+// WriteConsoleMessagesToStdout returns the "enable-write-console-messages-to-stdout" property.
+//
+// See also: webkit_settings_get_auto_load_images at
+// http://webkitgtk.org/reference/webkit2gtk/stable/WebKitSettings.html#webkit-settings-get-enable-write-console-messages-to-stdout
+func (s *Settings) EnableWriteConsoleMessagesToStdout() bool {
+	return gobool(C.webkit_settings_get_enable_write_console_messages_to_stdout(s.settings))
+}
+
+// SetWriteConsoleMessagesToStdout sets the "enable-write-console-messages-to-stdout" property.
+//
+// See also: webkit_settings_get_auto_load_images at
+// http://webkitgtk.org/reference/webkit2gtk/stable/WebKitSettings.html#webkit-settings-set-enable-write-console-messages-to-stdout
+func (s *Settings) SetEnableWriteConsoleMessagesToStdout(write bool) {
+	C.webkit_settings_set_enable_write_console_messages_to_stdout(s.settings, gboolean(write))
+}
