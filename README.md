@@ -41,6 +41,8 @@ should have an include file that satisfies `#include <webkit2/webkit2.h>`.
 
 ## Usage
 
+### As a Go package
+
 ```go
 package webkit2_test
 
@@ -102,6 +104,24 @@ the test files for usage information and examples.
 
 For more information about the underlying WebKitGTK+ 2 API, refer to the
 [WebKit2 docs](http://webkitgtk.org/reference/webkit2gtk/stable/index.html).
+
+
+### As a program for evaluating JavaScript in the context of a web page
+
+The included `webkit-eval-js` program runs the contents of a JavaScript file in the context of
+a web page. Run with:
+
+```
+$ go install github.com/sourcegraph/go-webkit2/...
+$ webkit-eval-js https://example.com scriptfile.js
+```
+
+For example:
+
+```
+$ echo document.title | webkit-eval-js https://google.com /dev/stdin
+"Google"
+```
 
 
 ## Used in
