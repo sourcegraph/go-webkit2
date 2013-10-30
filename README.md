@@ -104,6 +104,17 @@ For more information about the underlying WebKitGTK+ 2 API, refer to the
 [WebKit2 docs](http://webkitgtk.org/reference/webkit2gtk/stable/index.html).
 
 
+## Used in
+
+The following projects use go-webkit2:
+
+* [WebLoop](https://sourcegraph.com/github.com/sourcegraph/webloop) - headless WebKit with a Go API
+
+See [go-webkit2
+users](https://sourcegraph.com/github.com/sourcegraph/go-webkit2/network/repos/in)
+for a full list of repositories and people using go-webkit2.
+
+
 ## Running tests
 
 ```
