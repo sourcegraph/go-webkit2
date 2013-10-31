@@ -7,11 +7,11 @@ import (
 func TestSettings_AutoLoadImages(t *testing.T) {
 	s := NewWebView().Settings()
 
-	autoLoad := s.AutoLoadImages()
+	autoLoad := s.GetAutoLoadImages()
 	wantAutoLoad := !autoLoad
 	s.SetAutoLoadImages(wantAutoLoad)
 
-	autoLoad = s.AutoLoadImages()
+	autoLoad = s.GetAutoLoadImages()
 	if wantAutoLoad != autoLoad {
 		t.Errorf("want changed AutoLoad == %d, got %d", wantAutoLoad, autoLoad)
 	}

@@ -18,11 +18,11 @@ func newSettings(settings *C.WebKitSettings) *Settings {
 	return &Settings{&glib.Object{glib.ToGObject(unsafe.Pointer(settings))}, settings}
 }
 
-// AutoLoadImages returns the "auto-load-images" property.
+// GetAutoLoadImages returns the "auto-load-images" property.
 //
 // See also: webkit_settings_get_auto_load_images at
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitSettings.html#webkit-settings-get-auto-load-images
-func (s *Settings) AutoLoadImages() bool {
+func (s *Settings) GetAutoLoadImages() bool {
 	return gobool(C.webkit_settings_get_auto_load_images(s.settings))
 }
 
