@@ -51,3 +51,12 @@ func (s *Settings) GetEnableWriteConsoleMessagesToStdout() bool {
 func (s *Settings) SetEnableWriteConsoleMessagesToStdout(write bool) {
 	C.webkit_settings_set_enable_write_console_messages_to_stdout(s.settings, gboolean(write))
 }
+
+// SetUserAgentWithApplicationDetails sets the "user-agent" property by
+// appending the application details to the default user agent.
+//
+// See also: webkit_settings_set_user_agent_with_application_details at
+// http://webkitgtk.org/reference/webkit2gtk/unstable/WebKitSettings.html#webkit-settings-set-user-agent-with-application-details
+func (s *Settings) SetUserAgentWithApplicationDetails(appName, appVersion string) {
+	C.webkit_settings_set_user_agent_with_application_details(s.settings, (*C.gchar)(C.CString(appName)), (*C.gchar)(C.CString(appVersion)))
+}

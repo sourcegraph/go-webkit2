@@ -35,3 +35,8 @@ func TestSettings_EnableWriteConsoleMessagesToStdout(t *testing.T) {
 	// Revert to original setting.
 	s.SetEnableWriteConsoleMessagesToStdout(!write)
 }
+
+func TestSettings_SetUserAgentWithApplicationDetails(t *testing.T) {
+	s := NewWebView().Settings()
+	s.SetUserAgentWithApplicationDetails("myApp", "myVersion")
+}
