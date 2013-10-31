@@ -19,3 +19,19 @@ func TestSettings_AutoLoadImages(t *testing.T) {
 	// Revert to original setting.
 	s.SetAutoLoadImages(!autoLoad)
 }
+
+func TestSettings_EnableWriteConsoleMessagesToStdout(t *testing.T) {
+	s := NewWebView().Settings()
+
+	write := s.GetEnableWriteConsoleMessagesToStdout()
+	wantWrite := !write
+	s.SetEnableWriteConsoleMessagesToStdout(wantWrite)
+
+	write = s.GetEnableWriteConsoleMessagesToStdout()
+	if wantWrite != write {
+		t.Errorf("want changed Write == %d, got %d", wantWrite, write)
+	}
+
+	// Revert to original setting.
+	s.SetEnableWriteConsoleMessagesToStdout(!write)
+}
