@@ -34,24 +34,6 @@ func (s *Settings) SetAutoLoadImages(autoLoad bool) {
 	C.webkit_settings_set_auto_load_images(s.settings, gboolean(autoLoad))
 }
 
-// GetEnableWriteConsoleMessagesToStdout returns the
-// "enable-write-console-messages-to-stdout" property.
-//
-// See also: webkit_settings_get_enable_write_console_messages_to_stdout at
-// http://webkitgtk.org/reference/webkit2gtk/stable/WebKitSettings.html#webkit-settings-get-enable-write-console-messages-to-stdout
-func (s *Settings) GetEnableWriteConsoleMessagesToStdout() bool {
-	return gobool(C.webkit_settings_get_enable_write_console_messages_to_stdout(s.settings))
-}
-
-// SetEnableWriteConsoleMessagesToStdout sets the
-// "enable-write-console-messages-to-stdout" property.
-//
-// See also: webkit_settings_set_enable_write_console_messages_to_stdout at
-// http://webkitgtk.org/reference/webkit2gtk/stable/WebKitSettings.html#webkit-settings-set-enable-write-console-messages-to-stdout
-func (s *Settings) SetEnableWriteConsoleMessagesToStdout(write bool) {
-	C.webkit_settings_set_enable_write_console_messages_to_stdout(s.settings, gboolean(write))
-}
-
 // SetUserAgentWithApplicationDetails sets the "user-agent" property by
 // appending the application details to the default user agent.
 //

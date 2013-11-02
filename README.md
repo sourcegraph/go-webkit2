@@ -27,7 +27,12 @@ sudo add-apt-repository ppa:gnome3-team/gnome3-next
 sudo apt-get update
 sudo apt-get install libwebkit2gtk-3.0-dev
 ```
-
+#### Ubuntu 13.04 (Raring)
+```bash
+sudo add-apt-repository ppa:gnome3-team/gnome3
+sudo apt-get update
+sudo apt-get install libwebkit2gtk-3.0-dev
+```
 #### Arch Linux
 ```bash
 sudo pacman -S webkitgtk
