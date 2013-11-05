@@ -173,6 +173,13 @@ const cairoSurfaceTypeImage = 0
 // http://cairographics.org/manual/cairo-Image-Surfaces.html#cairo-format-t
 const cairoImageSurfaceFormatARB32 = 0
 
+// GetSnapshot runs script asynchronously in the context of the current page
+// in the WebView. Upon completion, resultCallback will be called with the
+// bitmap backing store for the current frame, or with an error encountered during
+// execution.
+//
+// See also: webkit_web_view_get_snapshot at
+// http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#webkit-web-view-get-snapshot
 func (v *WebView) GetSnapshot(resultCallback func(result *image.RGBA, err error)) {
 	var cCallback C.GAsyncReadyCallback
 	var userData C.gpointer

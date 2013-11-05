@@ -271,7 +271,13 @@ func TestWebView_GetSnapshot(t *testing.T) {
 		case LoadFinished:
 			webView.GetSnapshot(func(img *image.RGBA, err error) {
 				if err != nil {
-					t.Errorf("result is nil; got %q", err)
+					t.Errorf("GetSnapshot error: %q", err)
+				}
+				if img.Pix == nil {
+					t.Error("!img.Pix")
+				}
+				if img.Stride == 0 || img.Rect.Max.X == 0 || img.Rect.Max.Y == 0 {
+					t.Error("!img.Stride or !img.Rect.Max.X or !img.Rect.Max.Y")
 				}
 				gtk.MainQuit()
 			})
@@ -285,4 +291,3 @@ func TestWebView_GetSnapshot(t *testing.T) {
 
 	gtk.Main()
 }
-
