@@ -5,6 +5,7 @@ import (
 	"github.com/sqs/gojs"
 	"github.com/sqs/gotk3/glib"
 	"github.com/sqs/gotk3/gtk"
+	"image"
 	"net/http"
 	"reflect"
 	"testing"
@@ -259,3 +260,29 @@ func TestWebView_RunJavaScript_exception(t *testing.T) {
 
 	gtk.Main()
 }
+
+func TestWebView_GetSnapshot(t *testing.T) {
+	webView := NewWebView()
+	defer webView.Destroy()
+
+	webView.Connect("load-changed", func(ctx *glib.CallbackContext) {
+		loadEvent := LoadEvent(ctx.Arg(0).Int())
+		switch loadEvent {
+		case LoadFinished:
+			webView.GetSnapshot(func(img *image.RGBA, err error) {
+				if err != nil {
+					t.Errorf("result is nil; got %q", err)
+				}
+				gtk.MainQuit()
+			})
+		}
+	})
+
+	glib.IdleAdd(func() bool {
+		webView.LoadHTML(`<p id=foo>abc</p>`, "")
+		return false
+	})
+
+	gtk.Main()
+}
+
