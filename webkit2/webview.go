@@ -2,6 +2,7 @@ package webkit2
 
 // #include <stdlib.h>
 // #include <webkit2/webkit2.h>
+// #include <cairo/cairo.h>
 //
 // static WebKitWebView* to_WebKitWebView(GtkWidget* w) { return WEBKIT_WEB_VIEW(w); }
 //
@@ -13,6 +14,7 @@ import (
 	"github.com/sqs/gojs"
 	"github.com/sqs/gotk3/glib"
 	"github.com/sqs/gotk3/gtk"
+	"image"
 	"unsafe"
 )
 
@@ -164,3 +166,58 @@ const (
 	LoadCommitted
 	LoadFinished
 )
+
+// http://cairographics.org/manual/cairo-cairo-surface-t.html#cairo-surface-type-t
+const cairoSurfaceTypeImage = 0
+
+// http://cairographics.org/manual/cairo-Image-Surfaces.html#cairo-format-t
+const cairoImageSurfaceFormatARB32 = 0
+
+// GetSnapshot runs asynchronously, taking a snapshot of the WebView.
+// Upon completion, resultCallback will be called with a copy of the underlying
+// bitmap backing store for the frame, or with an error encountered during
+// execution.
+//
+// See also: webkit_web_view_get_snapshot at
+// http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#webkit-web-view-get-snapshot
+func (v *WebView) GetSnapshot(resultCallback func(result *image.RGBA, err error)) {
+	var cCallback C.GAsyncReadyCallback
+	var userData C.gpointer
+	var err error
+	if resultCallback != nil {
+		callback := func(result *C.GAsyncResult) {
+			var snapErr *C.GError
+			snapResult := C.webkit_web_view_get_snapshot_finish(v.webView, result, &snapErr)
+			if snapResult == nil {
+				defer C.g_error_free(snapErr)
+				msg := C.GoString((*C.char)(snapErr.message))
+				resultCallback(nil, errors.New(msg))
+				return
+			}
+			defer C.cairo_surface_destroy(snapResult)
+
+			if C.cairo_surface_get_type(snapResult) != cairoSurfaceTypeImage ||
+				C.cairo_image_surface_get_format(snapResult) != cairoImageSurfaceFormatARB32 {
+				panic("Snapshot in unexpected format")
+			}
+
+			w := int(C.cairo_image_surface_get_width(snapResult))
+			h := int(C.cairo_image_surface_get_height(snapResult))
+			stride := int(C.cairo_image_surface_get_stride(snapResult))
+			data := unsafe.Pointer(C.cairo_image_surface_get_data(snapResult))
+			rgba := &image.RGBA{C.GoBytes(data, C.int(stride*h)), stride, image.Rect(0, 0, w, h)}
+			resultCallback(rgba, nil)
+		}
+		cCallback, userData, err = newGAsyncReadyCallback(callback)
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	C.webkit_web_view_get_snapshot(v.webView,
+		(C.WebKitSnapshotRegion)(1), // FullDocument is the only working region at this point
+		(C.WebKitSnapshotOptions)(0),
+		nil,
+		cCallback,
+		userData)
+}
