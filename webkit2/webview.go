@@ -12,8 +12,8 @@ import "C"
 import (
 	"errors"
 	"github.com/sqs/gojs"
-	"github.com/sqs/gotk3/glib"
-	"github.com/sqs/gotk3/gtk"
+	"github.com/visionect/gotk3/glib"
+	"github.com/visionect/gotk3/gtk"
 	"image"
 	"unsafe"
 )
