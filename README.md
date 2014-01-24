@@ -53,7 +53,7 @@ package webkit2_test
 
 import (
 	"fmt"
-	"github.com/sourcegraph/go-webkit2/webkit2"
+	"github.com/visionect/go-webkit2/webkit2"
 	"github.com/sqs/gojs"
 	"github.com/visionect/gotk3/glib"
 	"github.com/visionect/gotk3/gtk"

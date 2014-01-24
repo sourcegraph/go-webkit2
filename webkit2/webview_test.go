@@ -236,7 +236,7 @@ func TestWebView_RunJavaScript_exception(t *testing.T) {
 	defer webView.Destroy()
 
 	wantErr := errors.New("An exception was raised in JavaScript")
-	webView.Connect("load-changed", func(_ *glib.Object, event int)) {
+	webView.Connect("load-changed", func(_ *glib.Object, event int) {
 		loadEvent := LoadEvent(event)
 		switch loadEvent {
 		case LoadFinished:
