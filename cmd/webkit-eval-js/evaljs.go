@@ -66,8 +66,8 @@ func main() {
 	webView.Connect("load-failed", func() {
 		fmt.Println("Load failed.")
 	})
-	webView.Connect("load-changed", func(ctx *glib.CallbackContext) {
-		loadEvent := webkit2.LoadEvent(ctx.Arg(0).Int())
+	webView.Connect("load-changed", func(_ *glib.Object, event int) {
+		loadEvent := webkit2.LoadEvent(event)
 		switch loadEvent {
 		case webkit2.LoadFinished:
 			webView.RunJavaScript(string(script), func(val *gojs.Value, err error) {
