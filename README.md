@@ -23,7 +23,7 @@ application.
 
 #### Ubuntu 13.10 (Saucy)
 ```bash
-sudo add-apt-repository ppa:gnome3-team/gnome3-next
+sudo add-apt-repository ppa:gnome3-team/gnome3-staging
 sudo apt-get update
 sudo apt-get install libwebkit2gtk-3.0-dev
 ```
