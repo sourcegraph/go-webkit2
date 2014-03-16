@@ -10,6 +10,8 @@ package webkit2
 import "C"
 
 import (
+	"bytes"
+	"encoding/binary"
 	"errors"
 	"github.com/sqs/gojs"
 	"github.com/sqs/gotk3/glib"
@@ -171,7 +173,7 @@ const (
 const cairoSurfaceTypeImage = 0
 
 // http://cairographics.org/manual/cairo-Image-Surfaces.html#cairo-format-t
-const cairoImageSurfaceFormatARB32 = 0
+const cairoImageSurfaceFormatARGB32 = 0
 
 // GetSnapshot runs asynchronously, taking a snapshot of the WebView.
 // Upon completion, resultCallback will be called with a copy of the underlying
@@ -197,7 +199,7 @@ func (v *WebView) GetSnapshot(resultCallback func(result *image.RGBA, err error)
 			defer C.cairo_surface_destroy(snapResult)
 
 			if C.cairo_surface_get_type(snapResult) != cairoSurfaceTypeImage ||
-				C.cairo_image_surface_get_format(snapResult) != cairoImageSurfaceFormatARB32 {
+				C.cairo_image_surface_get_format(snapResult) != cairoImageSurfaceFormatARGB32 {
 				panic("Snapshot in unexpected format")
 			}
 
@@ -205,7 +207,31 @@ func (v *WebView) GetSnapshot(resultCallback func(result *image.RGBA, err error)
 			h := int(C.cairo_image_surface_get_height(snapResult))
 			stride := int(C.cairo_image_surface_get_stride(snapResult))
 			data := unsafe.Pointer(C.cairo_image_surface_get_data(snapResult))
-			rgba := &image.RGBA{C.GoBytes(data, C.int(stride*h)), stride, image.Rect(0, 0, w, h)}
+			surfaceBytes := C.GoBytes(data, C.int(stride*h))
+			// convert from b,g,r,a or a,r,g,b(local endianness) to r,g,b,a
+			testint, _ := binary.ReadUvarint(bytes.NewBuffer([]byte{0x1, 0}))
+			if testint == 0x1 {
+				// Little: b,g,r,a -> r,g,b,a
+				for i := 0; i < w*h; i++ {
+					b := surfaceBytes[4*i+0]
+					r := surfaceBytes[4*i+2]
+					surfaceBytes[4*i+0] = r
+					surfaceBytes[4*i+2] = b
+				}
+			} else {
+				// Big: a,r,g,b -> r,g,b,a
+				for i := 0; i < w*h; i++ {
+					a := surfaceBytes[4*i+0]
+					r := surfaceBytes[4*i+1]
+					g := surfaceBytes[4*i+2]
+					b := surfaceBytes[4*i+3]
+					surfaceBytes[4*i+0] = r
+					surfaceBytes[4*i+1] = g
+					surfaceBytes[4*i+2] = b
+					surfaceBytes[4*i+3] = a
+				}
+			}
+			rgba := &image.RGBA{surfaceBytes, stride, image.Rect(0, 0, w, h)}
 			resultCallback(rgba, nil)
 		}
 		cCallback, userData, err = newGAsyncReadyCallback(callback)
