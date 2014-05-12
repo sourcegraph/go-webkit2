@@ -173,6 +173,20 @@ const cairoSurfaceTypeImage = 0
 // http://cairographics.org/manual/cairo-Image-Surfaces.html#cairo-format-t
 const cairoImageSurfaceFormatARB32 = 0
 
+// http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#WebKitSnapshotRegion
+type SnapshotRegion int
+const (
+	SnapshotRegionVisible SnapshotRegion = C.WEBKIT_SNAPSHOT_REGION_VISIBLE
+	SnapshotRegionFullDocument SnapshotRegion = C.WEBKIT_SNAPSHOT_REGION_FULL_DOCUMENT
+)
+
+// http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#WebKitSnapshotOptions
+type SnapshotOptions int
+const (
+	SnapshotOptionsNone = C.WEBKIT_SNAPSHOT_OPTIONS_NONE
+	SnapshotOptionsIncludeRegionHighlighting = C.WEBKIT_SNAPSHOT_OPTIONS_INCLUDE_SELECTION_HIGHLIGHTING
+)
+
 // GetSnapshot runs asynchronously, taking a snapshot of the WebView.
 // Upon completion, resultCallback will be called with a copy of the underlying
 // bitmap backing store for the frame, or with an error encountered during
@@ -181,6 +195,11 @@ const cairoImageSurfaceFormatARB32 = 0
 // See also: webkit_web_view_get_snapshot at
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#webkit-web-view-get-snapshot
 func (v *WebView) GetSnapshot(resultCallback func(result *image.RGBA, err error)) {
+		v.GetSnapshotCustum(SnapshotRegionFullDocument, SnapshotOptionsNone, resultCallback)
+}
+
+// http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#webkit-web-view-get-snapshot
+func (v *WebView) GetSnapshotCustum(region SnapshotRegion, options SnapshotOptions, resultCallback func(result *image.RGBA, err error)) {
 	var cCallback C.GAsyncReadyCallback
 	var userData C.gpointer
 	var err error
@@ -215,8 +234,8 @@ func (v *WebView) GetSnapshot(resultCallback func(result *image.RGBA, err error)
 	}
 
 	C.webkit_web_view_get_snapshot(v.webView,
-		(C.WebKitSnapshotRegion)(0), // FullDocument is the only working region at this point //XXX change to current view
-		(C.WebKitSnapshotOptions)(0),
+		(C.WebKitSnapshotRegion)(region),
+		(C.WebKitSnapshotOptions)(options),
 		nil,
 		cCallback,
 		userData)
