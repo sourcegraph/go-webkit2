@@ -15,13 +15,13 @@ type garCallback struct {
 }
 
 var (
-	//Map stores callback pointers to protect callbacks from GC.
-	CallbackProtectMap map[C.gpointer]*garCallback
-	ProtectMapLock	   sync.RWMutex
+	//Map stores callbacks pointers, to protect them from GC.
+	callbackProtectMap map[C.gpointer]*garCallback
+	protectMapLock	   sync.RWMutex
 )
 
 func init() {
-	CallbackProtectMap = make(map[C.gpointer]*garCallback)
+	callbackProtectMap = make(map[C.gpointer]*garCallback)
 }
 
 //export _go_gasyncreadycallback_call
@@ -30,9 +30,9 @@ func _go_gasyncreadycallback_call(cbinfoRaw C.gpointer, cresult unsafe.Pointer) 
 	cbinfo := (*garCallback)(unsafe.Pointer(cbinfoRaw))
 	cbinfo.f.Call([]reflect.Value{reflect.ValueOf(result)})
 	// protect callback from Garbage collection
-	ProtectMapLock.Lock()
-	delete(CallbackProtectMap, cbinfoRaw)
-	ProtectMapLock.Unlock()
+	protectMapLock.Lock()
+	delete(callbackProtectMap, cbinfoRaw)
+	protectMapLock.Unlock()
 }
 
 func newGAsyncReadyCallback(f interface{}) (cCallback C.GAsyncReadyCallback, userData C.gpointer, err error) {
@@ -43,8 +43,8 @@ func newGAsyncReadyCallback(f interface{}) (cCallback C.GAsyncReadyCallback, use
 	cbinfo := &garCallback{rf}
 	cbinfoRaw := C.gpointer(unsafe.Pointer(cbinfo))
 	// protect callback from Garbage collection
-	ProtectMapLock.Lock()
-	CallbackProtectMap[cbinfoRaw] = cbinfo
-	ProtectMapLock.Unlock()
+	protectMapLock.Lock()
+	callbackProtectMap[cbinfoRaw] = cbinfo
+	protectMapLock.Unlock()
 	return C.GAsyncReadyCallback(C._gasyncreadycallback_call), cbinfoRaw, nil
 }

@@ -191,6 +191,8 @@ const (
 // Upon completion, resultCallback will be called with a copy of the underlying
 // bitmap backing store for the frame, or with an error encountered during
 // execution.
+// The same as GetSnapshotCustum, but with difference difference that
+// region and options are pre set to SnapshotRegionFullDocument and SnapshotOptionsNone in advance.
 //
 // See also: webkit_web_view_get_snapshot at
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#webkit-web-view-get-snapshot
@@ -198,6 +200,12 @@ func (v *WebView) GetSnapshot(resultCallback func(result *image.RGBA, err error)
 		v.GetSnapshotCustum(SnapshotRegionFullDocument, SnapshotOptionsNone, resultCallback)
 }
 
+// GetSnapshotCustum runs asynchronously, taking a snapshot of the WebView.
+// Upon completion, resultCallback will be called with a copy of the underlying
+// bitmap backing store for the frame, or with an error encountered during
+// execution.
+//
+// See also: webkit_web_view_get_snapshot at
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#webkit-web-view-get-snapshot
 func (v *WebView) GetSnapshotCustum(region SnapshotRegion, options SnapshotOptions, resultCallback func(result *image.RGBA, err error)) {
 	var cCallback C.GAsyncReadyCallback
