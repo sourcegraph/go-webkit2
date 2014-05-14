@@ -6,8 +6,8 @@ import "C"
 import (
 	"errors"
 	"reflect"
-	"unsafe"
 	"sync"
+	"unsafe"
 )
 
 type garCallback struct {
@@ -17,7 +17,7 @@ type garCallback struct {
 var (
 	//Map stores callbacks pointers, to protect them from GC.
 	callbackProtectMap map[C.gpointer]*garCallback
-	protectMapLock	   sync.RWMutex
+	protectMapLock     sync.RWMutex
 )
 
 func init() {

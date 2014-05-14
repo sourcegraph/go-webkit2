@@ -175,15 +175,17 @@ const cairoImageSurfaceFormatARB32 = 0
 
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#WebKitSnapshotRegion
 type SnapshotRegion int
+
 const (
-	SnapshotRegionVisible SnapshotRegion = C.WEBKIT_SNAPSHOT_REGION_VISIBLE
+	SnapshotRegionVisible      SnapshotRegion = C.WEBKIT_SNAPSHOT_REGION_VISIBLE
 	SnapshotRegionFullDocument SnapshotRegion = C.WEBKIT_SNAPSHOT_REGION_FULL_DOCUMENT
 )
 
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#WebKitSnapshotOptions
 type SnapshotOptions int
+
 const (
-	SnapshotOptionsNone = C.WEBKIT_SNAPSHOT_OPTIONS_NONE
+	SnapshotOptionsNone                      = C.WEBKIT_SNAPSHOT_OPTIONS_NONE
 	SnapshotOptionsIncludeRegionHighlighting = C.WEBKIT_SNAPSHOT_OPTIONS_INCLUDE_SELECTION_HIGHLIGHTING
 )
 
@@ -197,7 +199,7 @@ const (
 // See also: webkit_web_view_get_snapshot at
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#webkit-web-view-get-snapshot
 func (v *WebView) GetSnapshot(resultCallback func(result *image.RGBA, err error)) {
-		v.GetSnapshotCustum(SnapshotRegionFullDocument, SnapshotOptionsNone, resultCallback)
+	v.GetSnapshotCustum(SnapshotRegionFullDocument, SnapshotOptionsNone, resultCallback)
 }
 
 // GetSnapshotCustum runs asynchronously, taking a snapshot of the WebView.
