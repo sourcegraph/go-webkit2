@@ -193,7 +193,7 @@ const (
 // Upon completion, resultCallback will be called with a copy of the underlying
 // bitmap backing store for the frame, or with an error encountered during
 // execution.
-// The same as GetSnapshotCustum, but with difference difference that
+// The same as GetSnapshotCustom, but with difference difference that
 // region and options are pre set to SnapshotRegionFullDocument and SnapshotOptionsNone in advance.
 //
 // See also: webkit_web_view_get_snapshot at
