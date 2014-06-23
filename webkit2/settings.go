@@ -39,7 +39,7 @@ func (s *Settings) SetAutoLoadImages(autoLoad bool) {
 // See also: webkit_settings_set_enable_developer_extras at
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitSettings.html#webkit-settings-get-enable-developer-extras
 func (s *Settings) GetEnableDeveloperExtras() bool {
-    return gobool(C.webkit_settings_get_enable_developer_extras(s.settings))
+	return gobool(C.webkit_settings_get_enable_developer_extras(s.settings))
 }
 
 // SetEnableDeveloperExtras sets the "enable-developer-extras" property.
@@ -47,7 +47,7 @@ func (s *Settings) GetEnableDeveloperExtras() bool {
 // See also: webkit_settings_set_enable_developer_extras at
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitSettings.html#webkit-settings-set-enable-developer-extras
 func (s *Settings) SetEnableDeveloperExtras(autoLoad bool) {
-    C.webkit_settings_set_enable_developer_extras(s.settings, gboolean(autoLoad))
+	C.webkit_settings_set_enable_developer_extras(s.settings, gboolean(autoLoad))
 }
 
 // SetUserAgentWithApplicationDetails sets the "user-agent" property by
