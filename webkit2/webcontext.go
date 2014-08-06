@@ -56,3 +56,12 @@ func (wc *WebContext) SetCacheModel(model CacheModel) {
 func (wc *WebContext) ClearCache() {
 	C.webkit_web_context_clear_cache(wc.webContext)
 }
+
+//SetWebExtensionsDirectory sets the directory where WebKit will look for Web Extensions.
+//
+//See also: webkit_web_context_set_web_extensions_directory
+//http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebContext.html#webkit-web-context-set-web-extensions-directory
+func (wc *WebContext) SetWebExtensionsDirectory(directory string) {
+	C.webkit_web_context_set_web_extensions_directory(wc.webContext, (*C.gchar)(C.CString(directory)))
+}
+
