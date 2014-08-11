@@ -1,7 +1,7 @@
 package webkit2
 
 import (
-	"github.com/sqs/gotk3/gtk"
+	"github.com/visionect/gotk3/gtk"
 	"runtime"
 )
 

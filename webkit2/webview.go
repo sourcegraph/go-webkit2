@@ -12,8 +12,8 @@ import "C"
 import (
 	"errors"
 	"github.com/sqs/gojs"
-	"github.com/sqs/gotk3/glib"
-	"github.com/sqs/gotk3/gtk"
+	"github.com/visionect/gotk3/glib"
+	"github.com/visionect/gotk3/gtk"
 	"image"
 	"unsafe"
 )
@@ -55,7 +55,7 @@ func newWebView(webViewWidget *C.GtkWidget) *WebView {
 // See also: webkit_web_view_get_context at
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#webkit-web-view-get-context.
 func (v *WebView) Context() *WebContext {
-	return &WebContext{C.webkit_web_view_get_context(v.webView)}
+	return newWebContext(C.webkit_web_view_get_context(v.webView))
 }
 
 // LoadURI requests loading of the specified URI string.
@@ -173,14 +173,43 @@ const cairoSurfaceTypeImage = 0
 // http://cairographics.org/manual/cairo-Image-Surfaces.html#cairo-format-t
 const cairoImageSurfaceFormatARB32 = 0
 
+// http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#WebKitSnapshotRegion
+type SnapshotRegion int
+
+const (
+	SnapshotRegionVisible      SnapshotRegion = C.WEBKIT_SNAPSHOT_REGION_VISIBLE
+	SnapshotRegionFullDocument SnapshotRegion = C.WEBKIT_SNAPSHOT_REGION_FULL_DOCUMENT
+)
+
+// http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#WebKitSnapshotOptions
+type SnapshotOptions int
+
+const (
+	SnapshotOptionsNone                      = C.WEBKIT_SNAPSHOT_OPTIONS_NONE
+	SnapshotOptionsIncludeRegionHighlighting = C.WEBKIT_SNAPSHOT_OPTIONS_INCLUDE_SELECTION_HIGHLIGHTING
+)
+
 // GetSnapshot runs asynchronously, taking a snapshot of the WebView.
+// Upon completion, resultCallback will be called with a copy of the underlying
+// bitmap backing store for the frame, or with an error encountered during
+// execution.
+// The same as GetSnapshotCustom, but with difference difference that
+// region and options are pre set to SnapshotRegionFullDocument and SnapshotOptionsNone in advance.
+//
+// See also: webkit_web_view_get_snapshot at
+// http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#webkit-web-view-get-snapshot
+func (v *WebView) GetSnapshot(resultCallback func(result *image.RGBA, err error)) {
+	v.GetSnapshotCustom(SnapshotRegionFullDocument, SnapshotOptionsNone, resultCallback)
+}
+
+// GetSnapshotCustom runs asynchronously, taking a snapshot of the WebView.
 // Upon completion, resultCallback will be called with a copy of the underlying
 // bitmap backing store for the frame, or with an error encountered during
 // execution.
 //
 // See also: webkit_web_view_get_snapshot at
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#webkit-web-view-get-snapshot
-func (v *WebView) GetSnapshot(resultCallback func(result *image.RGBA, err error)) {
+func (v *WebView) GetSnapshotCustom(region SnapshotRegion, options SnapshotOptions, resultCallback func(result *image.RGBA, err error)) {
 	var cCallback C.GAsyncReadyCallback
 	var userData C.gpointer
 	var err error
@@ -215,8 +244,8 @@ func (v *WebView) GetSnapshot(resultCallback func(result *image.RGBA, err error)
 	}
 
 	C.webkit_web_view_get_snapshot(v.webView,
-		(C.WebKitSnapshotRegion)(1), // FullDocument is the only working region at this point
-		(C.WebKitSnapshotOptions)(0),
+		(C.WebKitSnapshotRegion)(region),
+		(C.WebKitSnapshotOptions)(options),
 		nil,
 		cCallback,
 		userData)

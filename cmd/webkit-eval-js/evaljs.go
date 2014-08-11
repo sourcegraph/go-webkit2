@@ -3,10 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/sourcegraph/go-webkit2/webkit2"
+	"github.com/visionect/go-webkit2/webkit2"
 	"github.com/sqs/gojs"
-	"github.com/sqs/gotk3/glib"
-	"github.com/sqs/gotk3/gtk"
+	"github.com/visionect/gotk3/glib"
+	"github.com/visionect/gotk3/gtk"
 	"io/ioutil"
 	"log"
 	"net/url"
@@ -66,8 +66,8 @@ func main() {
 	webView.Connect("load-failed", func() {
 		fmt.Println("Load failed.")
 	})
-	webView.Connect("load-changed", func(ctx *glib.CallbackContext) {
-		loadEvent := webkit2.LoadEvent(ctx.Arg(0).Int())
+	webView.Connect("load-changed", func(_ *glib.Object, event int) {
+		loadEvent := webkit2.LoadEvent(event)
 		switch loadEvent {
 		case webkit2.LoadFinished:
 			webView.RunJavaScript(string(script), func(val *gojs.Value, err error) {
