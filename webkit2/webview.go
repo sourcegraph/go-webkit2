@@ -11,11 +11,12 @@ import "C"
 
 import (
 	"errors"
+	"image"
+	"unsafe"
+
 	"github.com/sqs/gojs"
 	"github.com/visionect/gotk3/glib"
 	"github.com/visionect/gotk3/gtk"
-	"image"
-	"unsafe"
 )
 
 // WebView represents a WebKit WebView.
@@ -55,7 +56,7 @@ func newWebView(webViewWidget *C.GtkWidget) *WebView {
 // See also: webkit_web_view_get_context at
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#webkit-web-view-get-context.
 func (v *WebView) Context() *WebContext {
-	return &WebContext{C.webkit_web_view_get_context(v.webView)}
+	return newWebContext(C.webkit_web_view_get_context(v.webView))
 }
 
 // LoadURI requests loading of the specified URI string.
