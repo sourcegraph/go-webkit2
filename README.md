@@ -147,7 +147,7 @@ The following projects use go-webkit2:
 * [WebLoop](https://sourcegraph.com/github.com/sourcegraph/webloop) - headless WebKit with a Go API
 
 See [go-webkit2
-users](https://sourcegraph.com/github.com/sourcegraph/go-webkit2/network/repos/in)
+users](https://sourcegraph.com/github.com/sourcegraph/go-webkit2/.dependents)
 for a full list of repositories and people using go-webkit2.
 
 
