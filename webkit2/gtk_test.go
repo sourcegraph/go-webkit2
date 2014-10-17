@@ -1,8 +1,9 @@
 package webkit2
 
 import (
-	"github.com/sqs/gotk3/gtk"
 	"runtime"
+
+	"github.com/conformal/gotk3/gtk"
 )
 
 func init() {

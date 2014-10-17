@@ -11,11 +11,12 @@ import "C"
 
 import (
 	"errors"
-	"github.com/sqs/gojs"
-	"github.com/sqs/gotk3/glib"
-	"github.com/sqs/gotk3/gtk"
 	"image"
 	"unsafe"
+
+	"github.com/conformal/gotk3/glib"
+	"github.com/conformal/gotk3/gtk"
+	"github.com/sqs/gojs"
 )
 
 // WebView represents a WebKit WebView.

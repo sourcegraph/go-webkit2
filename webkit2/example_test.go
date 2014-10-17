@@ -2,11 +2,12 @@ package webkit2_test
 
 import (
 	"fmt"
+	"runtime"
+
+	"github.com/conformal/gotk3/glib"
+	"github.com/conformal/gotk3/gtk"
 	"github.com/sourcegraph/go-webkit2/webkit2"
 	"github.com/sqs/gojs"
-	"github.com/sqs/gotk3/glib"
-	"github.com/sqs/gotk3/gtk"
-	"runtime"
 )
 
 func Example() {

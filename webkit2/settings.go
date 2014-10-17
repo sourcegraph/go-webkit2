@@ -3,7 +3,7 @@ package webkit2
 // #include <webkit2/webkit2.h>
 import "C"
 import "unsafe"
-import "github.com/sqs/gotk3/glib"
+import "github.com/conformal/gotk3/glib"
 
 type Settings struct {
 	*glib.Object

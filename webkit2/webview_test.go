@@ -2,13 +2,14 @@ package webkit2
 
 import (
 	"errors"
-	"github.com/sqs/gojs"
-	"github.com/sqs/gotk3/glib"
-	"github.com/sqs/gotk3/gtk"
 	"image"
 	"net/http"
 	"reflect"
 	"testing"
+
+	"github.com/conformal/gotk3/glib"
+	"github.com/conformal/gotk3/gtk"
+	"github.com/sqs/gojs"
 )
 
 func TestNewWebView(t *testing.T) {
