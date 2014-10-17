@@ -3,21 +3,21 @@
 package webkit2
 
 import (
-    "testing"
+	"testing"
 )
 
 func TestSettings_EnableWriteConsoleMessagesToStdout(t *testing.T) {
-    s := NewWebView().Settings()
+	s := NewWebView().Settings()
 
-    write := s.GetEnableWriteConsoleMessagesToStdout()
-    wantWrite := !write
-    s.SetEnableWriteConsoleMessagesToStdout(wantWrite)
+	write := s.GetEnableWriteConsoleMessagesToStdout()
+	wantWrite := !write
+	s.SetEnableWriteConsoleMessagesToStdout(wantWrite)
 
-    write = s.GetEnableWriteConsoleMessagesToStdout()
-    if wantWrite != write {
-        t.Errorf("want changed Write == %d, got %d", wantWrite, write)
-    }
+	write = s.GetEnableWriteConsoleMessagesToStdout()
+	if wantWrite != write {
+		t.Errorf("want changed Write == %d, got %d", wantWrite, write)
+	}
 
-    // Revert to original setting.
-    s.SetEnableWriteConsoleMessagesToStdout(!write)
+	// Revert to original setting.
+	s.SetEnableWriteConsoleMessagesToStdout(!write)
 }
