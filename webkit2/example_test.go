@@ -20,8 +20,8 @@ func Example() {
 	webView.Connect("load-failed", func() {
 		fmt.Println("Load failed.")
 	})
-	webView.Connect("load-changed", func(ctx *glib.CallbackContext) {
-		loadEvent := webkit2.LoadEvent(ctx.Arg(0).Int())
+	webView.Connect("load-changed", func(_ *glib.Object, i int) {
+		loadEvent := webkit2.LoadEvent(i)
 		switch loadEvent {
 		case webkit2.LoadFinished:
 			fmt.Println("Load finished.")

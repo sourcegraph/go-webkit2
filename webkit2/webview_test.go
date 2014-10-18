@@ -43,8 +43,7 @@ func TestWebView_LoadURI(t *testing.T) {
 	webView.Connect("load-failed", func() {
 		t.Errorf("load failed")
 	})
-	webView.Connect("load-changed", func(ctx *glib.CallbackContext) {
-		loadEvent := LoadEvent(ctx.Arg(0).Int())
+	webView.Connect("load-changed", func(_ *glib.Object, loadEvent LoadEvent) {
 		switch loadEvent {
 		case LoadFinished:
 			loadFinished = true
@@ -76,8 +75,7 @@ func TestWebView_LoadURI_load_failed(t *testing.T) {
 	webView.Connect("load-failed", func() {
 		loadFailed = true
 	})
-	webView.Connect("load-changed", func(ctx *glib.CallbackContext) {
-		loadEvent := LoadEvent(ctx.Arg(0).Int())
+	webView.Connect("load-changed", func(_ *glib.Object, loadEvent LoadEvent) {
 		switch loadEvent {
 		case LoadFinished:
 			loadFinished = true
@@ -109,8 +107,7 @@ func TestWebView_LoadHTML(t *testing.T) {
 	webView.Connect("load-failed", func() {
 		t.Errorf("load failed")
 	})
-	webView.Connect("load-changed", func(ctx *glib.CallbackContext) {
-		loadEvent := LoadEvent(ctx.Arg(0).Int())
+	webView.Connect("load-changed", func(_ *glib.Object, loadEvent LoadEvent) {
 		switch loadEvent {
 		case LoadFinished:
 			loadOk = true
@@ -166,7 +163,7 @@ func TestWebView_URI(t *testing.T) {
 
 	wantURI := server.URL + "/"
 	var gotURI string
-	webView.Connect("notify::uri", func(ctx *glib.CallbackContext) {
+	webView.Connect("notify::uri", func() {
 		glib.IdleAdd(func() bool {
 			gotURI = webView.URI()
 			if gotURI != "" {
@@ -207,8 +204,7 @@ func TestWebView_RunJavaScript(t *testing.T) {
 	defer webView.Destroy()
 
 	wantResultString := "abc"
-	webView.Connect("load-changed", func(ctx *glib.CallbackContext) {
-		loadEvent := LoadEvent(ctx.Arg(0).Int())
+	webView.Connect("load-changed", func(_ *glib.Object, loadEvent LoadEvent) {
 		switch loadEvent {
 		case LoadFinished:
 			webView.RunJavaScript(`document.getElementById("foo").innerHTML`, func(result *gojs.Value, err error) {
@@ -237,8 +233,7 @@ func TestWebView_RunJavaScript_exception(t *testing.T) {
 	defer webView.Destroy()
 
 	wantErr := errors.New("An exception was raised in JavaScript")
-	webView.Connect("load-changed", func(ctx *glib.CallbackContext) {
-		loadEvent := LoadEvent(ctx.Arg(0).Int())
+	webView.Connect("load-changed", func(_ *glib.Object, loadEvent LoadEvent) {
 		switch loadEvent {
 		case LoadFinished:
 			webView.RunJavaScript(`throw new Error("foo")`, func(result *gojs.Value, err error) {
@@ -266,8 +261,7 @@ func TestWebView_GetSnapshot(t *testing.T) {
 	webView := NewWebView()
 	defer webView.Destroy()
 
-	webView.Connect("load-changed", func(ctx *glib.CallbackContext) {
-		loadEvent := LoadEvent(ctx.Arg(0).Int())
+	webView.Connect("load-changed", func(_ *glib.Object, loadEvent LoadEvent) {
 		switch loadEvent {
 		case LoadFinished:
 			webView.GetSnapshot(func(img *image.RGBA, err error) {
