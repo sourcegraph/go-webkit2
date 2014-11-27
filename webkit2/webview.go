@@ -76,6 +76,15 @@ func (v *WebView) LoadHTML(content, baseURI string) {
 	C.webkit_web_view_load_html(v.webView, (*C.gchar)(C.CString(content)), (*C.gchar)(C.CString(baseURI)))
 }
 
+// LoadAlternateHTML loads the given content string for the URI content_uri .
+// This allows clients to display page-loading errors in the WebKitWebView itself
+//
+// See also: webkit_web_view_load_alternate_html at
+// http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#webkit-web-view-load-alternate-html
+func (v *WebView) LoadAlternateHTML(content, contentURI, baseURI string) {
+	C.webkit_web_view_load_alternate_html(v.webView, (*C.gchar)(C.CString(content)), (*C.gchar)(C.CString(contentURI)), (*C.gchar)(C.CString(baseURI)))
+}
+
 // Settings returns the current active settings of this WebView's WebViewGroup.
 //
 // See also: webkit_web_view_get_settings at
@@ -167,6 +176,21 @@ const (
 	LoadCommitted
 	LoadFinished
 )
+
+func (le LoadEvent) String() string {
+	switch le {
+	case LoadStarted:
+		return "load-started"
+	case LoadRedirected:
+		return "load-redirected"
+	case LoadCommitted:
+		return "load-commited"
+	case LoadFinished:
+		return "load-finished"
+	}
+
+	return "unknown"
+}
 
 // http://cairographics.org/manual/cairo-cairo-surface-t.html#cairo-surface-type-t
 const cairoSurfaceTypeImage = 0
