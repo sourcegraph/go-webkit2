@@ -1,5 +1,6 @@
 package webkit2
 
+// #include <stdlib.h>
 // #include <webkit2/webkit2.h>
 import "C"
 import (
@@ -71,7 +72,9 @@ func (wc *WebContext) ClearCache() {
 // See also: webkit_web_context_set_disk_cache_directory
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebContext.html#webkit-web-context-set-disk-cache-directory
 func (wc *WebContext) SetDiskCacheDirectory(directory string) {
-	C.webkit_web_context_set_disk_cache_directory(wc.webContext, (*C.gchar)(C.CString(directory)))
+	cstr := C.CString(directory)
+	defer C.free(unsafe.Pointer(cstr))
+	C.webkit_web_context_set_disk_cache_directory(wc.webContext, (*C.gchar)(cstr))
 }
 
 func (wc *WebContext) GetCookieManager() *CookieManager {
@@ -83,6 +86,8 @@ func (wc *WebContext) GetCookieManager() *CookieManager {
 // See also: webkit_web_context_set_web_extensions_directory
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebContext.html#webkit-web-context-set-web-extensions-directory
 func (wc *WebContext) SetWebExtensionsDirectory(directory string) {
-	C.webkit_web_context_set_web_extensions_directory(wc.webContext, (*C.gchar)(C.CString(directory)))
+	cstr := C.CString(directory)
+	defer C.free(unsafe.Pointer(cstr))
+	C.webkit_web_context_set_web_extensions_directory(wc.webContext, (*C.gchar)(cstr))
 }
 

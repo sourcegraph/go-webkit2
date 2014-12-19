@@ -1,5 +1,6 @@
 package webkit2
 
+// #include <stdlib.h>
 // #include <webkit2/webkit2.h>
 import "C"
 import "unsafe"
@@ -56,5 +57,9 @@ func (s *Settings) SetEnableDeveloperExtras(autoLoad bool) {
 // See also: webkit_settings_set_user_agent_with_application_details at
 // http://webkitgtk.org/reference/webkit2gtk/unstable/WebKitSettings.html#webkit-settings-set-user-agent-with-application-details
 func (s *Settings) SetUserAgentWithApplicationDetails(appName, appVersion string) {
-	C.webkit_settings_set_user_agent_with_application_details(s.settings, (*C.gchar)(C.CString(appName)), (*C.gchar)(C.CString(appVersion)))
+	cName := C.CString(appName)
+	defer C.free(unsafe.Pointer(cName))
+	cVersion := C.CString(appVersion)
+	defer C.free(unsafe.Pointer(cVersion))
+	C.webkit_settings_set_user_agent_with_application_details(s.settings, (*C.gchar)(cName), (*C.gchar)(cVersion))
 }

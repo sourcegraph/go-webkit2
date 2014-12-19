@@ -1,5 +1,6 @@
 package webkit2
 
+// #include <stdlib.h>
 // #include <webkit2/webkit2.h>
 import "C"
 import (
@@ -35,8 +36,10 @@ const (
 // See also: webkit_cookie_manager_set_persistent_storage
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitCookieManager.html#webkit-cookie-manager-set-persistent-storage
 func (cm *CookieManager) SetPersistentStorage(filename string, storage CookiePersistentStorage) {
+	cstr := C.CString(filename)
+	defer C.free(unsafe.Pointer(cstr))
 	C.webkit_cookie_manager_set_persistent_storage(cm.cookieManager,
-		(*C.gchar)(C.CString(filename)),
+		(*C.gchar)(cstr),
 		C.WebKitCookiePersistentStorage(storage))
 }
 
@@ -64,8 +67,10 @@ func (cm *CookieManager) SetAcceptPolicy(policy CookieAcceptPolicy) {
 // See also: webkit_cookie_manager_delete_cookies_for_domain
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitCookieManager.html#webkit-cookie-manager-delete-cookies-for-domain
 func (cm *CookieManager) DeleteCookiesForDomain(domain string) {
+	cstr := C.CString(domain)
+	defer C.free(unsafe.Pointer(cstr))
 	C.webkit_cookie_manager_delete_cookies_for_domain(cm.cookieManager,
-		(*C.gchar)(C.CString(domain)))
+		(*C.gchar)(cstr))
 }
 
 // DeleteAllCookies delete all cookies of CookieManager. 

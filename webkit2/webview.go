@@ -64,7 +64,9 @@ func (v *WebView) Context() *WebContext {
 // See also: webkit_web_view_load_uri at
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#webkit-web-view-load-uri
 func (v *WebView) LoadURI(uri string) {
-	C.webkit_web_view_load_uri(v.webView, (*C.gchar)(C.CString(uri)))
+	cUri := C.CString(uri)
+	defer C.free(unsafe.Pointer(cUri))
+	C.webkit_web_view_load_uri(v.webView, (*C.gchar)(cUri))
 }
 
 // LoadHTML loads the given content string with the specified baseURI. The MIME
@@ -73,7 +75,11 @@ func (v *WebView) LoadURI(uri string) {
 // See also: webkit_web_view_load_html at
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#webkit-web-view-load-html
 func (v *WebView) LoadHTML(content, baseURI string) {
-	C.webkit_web_view_load_html(v.webView, (*C.gchar)(C.CString(content)), (*C.gchar)(C.CString(baseURI)))
+	cContent := C.CString(content)
+	defer C.free(unsafe.Pointer(cContent))
+	cBaseURI := C.CString(baseURI)
+	defer C.free(unsafe.Pointer(cBaseURI))
+	C.webkit_web_view_load_html(v.webView, (*C.gchar)(cContent), (*C.gchar)(cBaseURI))
 }
 
 // LoadAlternateHTML loads the given content string for the URI content_uri .
@@ -82,7 +88,13 @@ func (v *WebView) LoadHTML(content, baseURI string) {
 // See also: webkit_web_view_load_alternate_html at
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#webkit-web-view-load-alternate-html
 func (v *WebView) LoadAlternateHTML(content, contentURI, baseURI string) {
-	C.webkit_web_view_load_alternate_html(v.webView, (*C.gchar)(C.CString(content)), (*C.gchar)(C.CString(contentURI)), (*C.gchar)(C.CString(baseURI)))
+	cContent := C.CString(content)
+	defer C.free(unsafe.Pointer(cContent))
+	cContentURI := C.CString(contentURI)
+	defer C.free(unsafe.Pointer(cContentURI))
+	cBaseURI := C.CString(baseURI)
+	defer C.free(unsafe.Pointer(cBaseURI))
+	C.webkit_web_view_load_alternate_html(v.webView, (*C.gchar)(cContent), (*C.gchar)(cContentURI), (*C.gchar)(cBaseURI))
 }
 
 // Settings returns the current active settings of this WebView's WebViewGroup.
@@ -151,7 +163,9 @@ func (v *WebView) RunJavaScript(script string, resultCallback func(result *gojs.
 			panic(err)
 		}
 	}
-	C.webkit_web_view_run_javascript(v.webView, (*C.gchar)(C.CString(script)), nil, cCallback, userData)
+	cScript := C.CString(script)
+	defer C.free(unsafe.Pointer(cScript))
+	C.webkit_web_view_run_javascript(v.webView, (*C.gchar)(cScript), nil, cCallback, userData)
 }
 
 // Destroy destroys the WebView's corresponding GtkWidget and marks its internal
