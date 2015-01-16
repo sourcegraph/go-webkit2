@@ -77,6 +77,17 @@ func (wc *WebContext) SetDiskCacheDirectory(directory string) {
 	C.webkit_web_context_set_disk_cache_directory(wc.webContext, (*C.gchar)(cstr))
 }
 
+// SetFaviconDatabaseDirectory sets the directory path to be used to store the favicons database for context on disk.
+//
+// See also: webkit_web_context_set_favicon_database_directory
+// http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebContext.html#webkit-web-context-set-favicon-database-directory
+func (wc *WebContext) SetFaviconDatabaseDirectory(directory string) {
+	cstr := C.CString(directory)
+	defer C.free(unsafe.Pointer(cstr))
+	C.webkit_web_context_set_favicon_database_directory(wc.webContext, (*C.gchar)(cstr))
+}
+
+
 func (wc *WebContext) GetCookieManager() *CookieManager {
 	return newCookieManager(C.webkit_web_context_get_cookie_manager(wc.webContext))
 }
