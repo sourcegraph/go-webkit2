@@ -3,15 +3,16 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/visionect/go-webkit2/webkit2"
-	"github.com/sqs/gojs"
-	"github.com/visionect/gotk3/glib"
-	"github.com/visionect/gotk3/gtk"
 	"io/ioutil"
 	"log"
 	"net/url"
 	"os"
 	"runtime"
+
+	"github.com/visionect/gotk3/glib"
+	"github.com/visionect/gotk3/gtk"
+	"github.com/visionect/go-webkit2/webkit2"
+	"github.com/sqs/gojs"
 )
 
 func main() {

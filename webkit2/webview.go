@@ -11,11 +11,12 @@ import "C"
 
 import (
 	"errors"
-	"github.com/sqs/gojs"
-	"github.com/visionect/gotk3/glib"
-	"github.com/visionect/gotk3/gtk"
 	"image"
 	"unsafe"
+
+	"github.com/visionect/gotk3/glib"
+	"github.com/visionect/gotk3/gtk"
+	"github.com/sqs/gojs"
 )
 
 // WebView represents a WebKit WebView.
@@ -105,7 +106,7 @@ func (v *WebView) URI() string {
 // See also: webkit_web_view_get_javascript_global_context at
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#webkit-web-view-get-javascript-global-context
 func (v *WebView) JavaScriptGlobalContext() *gojs.Context {
-	return gojs.NewContextFrom(gojs.RawContext(C.webkit_web_view_get_javascript_global_context(v.webView)))
+	return (*gojs.Context)(gojs.NewGlobalContextFrom((gojs.RawGlobalContext)(unsafe.Pointer(C.webkit_web_view_get_javascript_global_context(v.webView)))))
 }
 
 // RunJavaScript runs script asynchronously in the context of the current page
@@ -130,9 +131,9 @@ func (v *WebView) RunJavaScript(script string, resultCallback func(result *gojs.
 				resultCallback(nil, errors.New(msg))
 				return
 			}
-			ctxRaw := gojs.RawContext(C.webkit_javascript_result_get_global_context(jsResult))
-			jsValRaw := gojs.RawValue(C.webkit_javascript_result_get_value(jsResult))
-			ctx := gojs.NewContextFrom(ctxRaw)
+			ctxRaw := gojs.RawGlobalContext(unsafe.Pointer(C.webkit_javascript_result_get_global_context(jsResult)))
+			jsValRaw := gojs.RawValue(unsafe.Pointer(C.webkit_javascript_result_get_value(jsResult)))
+			ctx := (*gojs.Context)(gojs.NewGlobalContextFrom(ctxRaw))
 			jsVal := ctx.NewValueFrom(jsValRaw)
 			resultCallback(jsVal, nil)
 		}
