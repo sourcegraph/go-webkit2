@@ -4,6 +4,8 @@ package webkit2
 // #include <webkit2/webkit2.h>
 // #include <cairo/cairo.h>
 //
+//#include "cairo_endianes.h"
+//
 // static WebKitWebView* to_WebKitWebView(GtkWidget* w) { return WEBKIT_WEB_VIEW(w); }
 //
 // #cgo pkg-config: webkit2gtk-3.0
@@ -210,7 +212,7 @@ func (le LoadEvent) String() string {
 const cairoSurfaceTypeImage = 0
 
 // http://cairographics.org/manual/cairo-Image-Surfaces.html#cairo-format-t
-const cairoImageSurfaceFormatARB32 = 0
+const cairoImageSurfaceFormatARGB32 = 0
 
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#WebKitSnapshotRegion
 type SnapshotRegion int
@@ -265,7 +267,7 @@ func (v *WebView) GetSnapshotCustom(region SnapshotRegion, options SnapshotOptio
 			defer C.cairo_surface_destroy(snapResult)
 
 			if C.cairo_surface_get_type(snapResult) != cairoSurfaceTypeImage ||
-				C.cairo_image_surface_get_format(snapResult) != cairoImageSurfaceFormatARB32 {
+				C.cairo_image_surface_get_format(snapResult) != cairoImageSurfaceFormatARGB32 {
 				panic("Snapshot in unexpected format")
 			}
 
@@ -273,7 +275,16 @@ func (v *WebView) GetSnapshotCustom(region SnapshotRegion, options SnapshotOptio
 			h := int(C.cairo_image_surface_get_height(snapResult))
 			stride := int(C.cairo_image_surface_get_stride(snapResult))
 			data := unsafe.Pointer(C.cairo_image_surface_get_data(snapResult))
+
+			//(miha) fix endianes depended byte order, and copy to go slice at the same time.
+			//data_fixed := make([]byte, stride*h)
+			//C.gowk2_cairo_endian_depended_ARGB32_to_RGBA_copy((*C.uchar)(data), (*C.uchar)(&data_fixed[0]), C.uint(stride*h))
+			//rgba := &image.RGBA{data_fixed, stride, image.Rect(0, 0, w, h)}
+
+			// slower but doesn't use Go pointers inside C. See https://github.com/golang/go/issues/8310 !!!!!!!
+			C.gowk2_cairo_endian_depended_ARGB32_to_RGBA((*C.uchar)(data), C.uint(stride*h))
 			rgba := &image.RGBA{C.GoBytes(data, C.int(stride*h)), stride, image.Rect(0, 0, w, h)}
+
 			resultCallback(rgba, nil)
 		}
 		cCallback, userData, err = newGAsyncReadyCallback(callback)
