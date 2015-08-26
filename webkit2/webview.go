@@ -16,9 +16,9 @@ import (
 	"image"
 	"unsafe"
 
+	"github.com/sqs/gojs"
 	"github.com/visionect/gotk3/glib"
 	"github.com/visionect/gotk3/gtk"
-	"github.com/sqs/gojs"
 )
 
 // WebView represents a WebKit WebView.
@@ -97,6 +97,14 @@ func (v *WebView) LoadAlternateHTML(content, contentURI, baseURI string) {
 	cBaseURI := C.CString(baseURI)
 	defer C.free(unsafe.Pointer(cBaseURI))
 	C.webkit_web_view_load_alternate_html(v.webView, (*C.gchar)(cContent), (*C.gchar)(cContentURI), (*C.gchar)(cBaseURI))
+}
+
+// Reloads the current contents of web_view . See also webkit_web_view_reload_bypass_cache().
+//
+// See also: webkit_web_view_reload_html at
+// http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#webkit-web-view-reload
+func (v *WebView) Reload() {
+	C.webkit_web_view_reload(v.webView)
 }
 
 // Settings returns the current active settings of this WebView's WebViewGroup.
