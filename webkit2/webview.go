@@ -14,6 +14,7 @@ import "C"
 import (
 	"errors"
 	"image"
+	"log"
 	"unsafe"
 
 	"github.com/sqs/gojs"
@@ -265,6 +266,7 @@ func (v *WebView) GetSnapshotCustom(region SnapshotRegion, options SnapshotOptio
 	if resultCallback != nil {
 		callback := func(result *C.GAsyncResult) {
 			var snapErr *C.GError
+			log.Printf("webkit.GetSnapshotCustom callback\n")
 			snapResult := C.webkit_web_view_get_snapshot_finish(v.webView, result, &snapErr)
 			if snapResult == nil {
 				defer C.g_error_free(snapErr)
@@ -272,6 +274,7 @@ func (v *WebView) GetSnapshotCustom(region SnapshotRegion, options SnapshotOptio
 				resultCallback(nil, errors.New(msg))
 				return
 			}
+			log.Printf("webkit.GetSnapshotCustom callback got surface\n")
 			defer C.cairo_surface_destroy(snapResult)
 
 			if C.cairo_surface_get_type(snapResult) != cairoSurfaceTypeImage ||
@@ -290,8 +293,11 @@ func (v *WebView) GetSnapshotCustom(region SnapshotRegion, options SnapshotOptio
 			//rgba := &image.RGBA{data_fixed, stride, image.Rect(0, 0, w, h)}
 
 			// slower but doesn't use Go pointers inside C. See https://github.com/golang/go/issues/8310 !!!!!!!
+			log.Printf("webkit.GetSnapshotCustom callback before color reorder\n")
 			C.gowk2_cairo_endian_depended_ARGB32_to_RGBA((*C.uchar)(data), C.uint(stride*h))
+			log.Printf("webkit.GetSnapshotCustom callback after color reorder\n")
 			rgba := &image.RGBA{C.GoBytes(data, C.int(stride*h)), stride, image.Rect(0, 0, w, h)}
+			log.Printf("webkit.GetSnapshotCustom callback after copying data to GO")
 
 			resultCallback(rgba, nil)
 		}
