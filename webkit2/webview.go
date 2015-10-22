@@ -285,19 +285,25 @@ func (v *WebView) GetSnapshotCustom(region SnapshotRegion, options SnapshotOptio
 			w := int(C.cairo_image_surface_get_width(snapResult))
 			h := int(C.cairo_image_surface_get_height(snapResult))
 			stride := int(C.cairo_image_surface_get_stride(snapResult))
+			log.Printf("Before surface flush\n")
+			C.cairo_surface_flush(snapResult)
+			log.Printf("After surface flush\n")
 			data := unsafe.Pointer(C.cairo_image_surface_get_data(snapResult))
 
 			//(miha) fix endianes depended byte order, and copy to go slice at the same time.
-			//data_fixed := make([]byte, stride*h)
-			//C.gowk2_cairo_endian_depended_ARGB32_to_RGBA_copy((*C.uchar)(data), (*C.uchar)(&data_fixed[0]), C.uint(stride*h))
-			//rgba := &image.RGBA{data_fixed, stride, image.Rect(0, 0, w, h)}
+			log.Printf("webkit.GetSnapshotCustom callback before allocating memory\n")
+			data_fixed := make([]byte, stride*h)
+			log.Printf("webkit.GetSnapshotCustom callback before color reorder\n")
+			C.gowk2_cairo_endian_depended_ARGB32_to_RGBA((*C.uchar)(data), (*C.uchar)(&data_fixed[0]), C.uint(stride*h))
+			rgba := &image.RGBA{data_fixed, stride, image.Rect(0, 0, w, h)}
+			log.Printf("webkit.GetSnapshotCustom callback after color reorder\n")
 
 			// slower but doesn't use Go pointers inside C. See https://github.com/golang/go/issues/8310 !!!!!!!
-			log.Printf("webkit.GetSnapshotCustom callback before color reorder\n")
-			C.gowk2_cairo_endian_depended_ARGB32_to_RGBA((*C.uchar)(data), C.uint(stride*h))
-			log.Printf("webkit.GetSnapshotCustom callback after color reorder\n")
-			rgba := &image.RGBA{C.GoBytes(data, C.int(stride*h)), stride, image.Rect(0, 0, w, h)}
-			log.Printf("webkit.GetSnapshotCustom callback after copying data to GO")
+			//log.Printf("webkit.GetSnapshotCustom callback before color reorder\n")
+			//C.gowk2_cairo_endian_depended_ARGB32_to_RGBA((*C.uchar)(data), C.uint(stride*h))
+			//log.Printf("webkit.GetSnapshotCustom callback after color reorder\n")
+			//rgba := &image.RGBA{C.GoBytes(data, C.int(stride*h)), stride, image.Rect(0, 0, w, h)}
+			//log.Printf("webkit.GetSnapshotCustom callback after copying data to GO")
 
 			resultCallback(rgba, nil)
 		}
