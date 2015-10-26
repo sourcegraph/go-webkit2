@@ -142,8 +142,3 @@ void gowk2_cairo_endian_depended_ARGB32_to_RGBA_smart(unsigned char *data, unsig
 	//printf("webkit endian 2\n");
       return;
 }
-
-///
-
-
-
