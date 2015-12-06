@@ -197,7 +197,7 @@ const cairoImageSurfaceFormatARGB32 = 0
 //
 // See also: webkit_web_view_get_snapshot at
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#webkit-web-view-get-snapshot
-func (v *WebView) GetSnapshot(snapshotRegion SnapshotRegion ,resultCallback func(result *image.RGBA, err error)) {
+func (v *WebView) GetSnapshot(snapshotRegion SnapshotRegion, resultCallback func(result *image.RGBA, err error)) {
 	var cCallback C.GAsyncReadyCallback
 	var userData C.gpointer
 	var err error
@@ -206,10 +206,7 @@ func (v *WebView) GetSnapshot(snapshotRegion SnapshotRegion ,resultCallback func
 			var snapErr *C.GError
 			snapResult := C.webkit_web_view_get_snapshot_finish(v.webView, result, &snapErr)
 			if snapResult == nil {
-
-
 				defer C.g_error_free(snapErr)
-
 				msg := C.GoString((*C.char)(snapErr.message))
 				resultCallback(nil, errors.New(msg))
 				return
