@@ -192,7 +192,10 @@ func (v *WebView) GetSnapshot(resultCallback func(result *image.RGBA, err error)
 			var snapErr *C.GError
 			snapResult := C.webkit_web_view_get_snapshot_finish(v.webView, result, &snapErr)
 			if snapResult == nil {
+
+
 				defer C.g_error_free(snapErr)
+
 				msg := C.GoString((*C.char)(snapErr.message))
 				resultCallback(nil, errors.New(msg))
 				return
@@ -242,7 +245,7 @@ func (v *WebView) GetSnapshot(resultCallback func(result *image.RGBA, err error)
 	}
 
 	C.webkit_web_view_get_snapshot(v.webView,
-		(C.WebKitSnapshotRegion)(1), // FullDocument is the only working region at this point
+		(C.WebKitSnapshotRegion)(0), // FullDocument is the only working region at this point
 		(C.WebKitSnapshotOptions)(0),
 		nil,
 		cCallback,
