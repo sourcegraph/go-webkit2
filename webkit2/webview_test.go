@@ -264,7 +264,7 @@ func TestWebView_GetSnapshot(t *testing.T) {
 	webView.Connect("load-changed", func(_ *glib.Object, loadEvent LoadEvent) {
 		switch loadEvent {
 		case LoadFinished:
-			webView.GetSnapshot(func(img *image.RGBA, err error) {
+			webView.GetSnapshot(SnapshotRegionVisible, func(img *image.RGBA, err error) {
 				if err != nil {
 					t.Errorf("GetSnapshot error: %q", err)
 				}

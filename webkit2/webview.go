@@ -256,7 +256,7 @@ func (v *WebView) GetSnapshot(snapshotRegion SnapshotRegion, resultCallback func
 	}
 
 	C.webkit_web_view_get_snapshot(v.webView,
-		(C.WebKitSnapshotRegion)(snapshotRegion), // FullDocument is the only working region at this point
+		(C.WebKitSnapshotRegion)(snapshotRegion),
 		(C.WebKitSnapshotOptions)(0),
 		nil,
 		cCallback,
