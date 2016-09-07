@@ -18,8 +18,19 @@ application.
 ## Requirements
 
 * [Go](http://golang.org) >= 1.2rc1 (due to [#3250](https://code.google.com/p/go/issues/detail?id=3250))
-* [GTK+](http://www.gtk.org) 3.6+
+* [GTK+](http://www.gtk.org) 3.10+
 * [WebKitGTK+](http://webkitgtk.org/) >= 2.0.0
+
+You can specify Go build tags to omit bindings in
+[gotk3](https://github.com/conformal/gotk3) for later versions of GTK
+(e.g., `go build -tags gtk_3_10`).
+
+#### Ubuntu 14.04 (Trusty)
+```bash
+sudo apt-get install libwebkit2gtk-3.0-dev
+```
+
+Pass `-tags gtk_3_10` to the go tool if you have GTK 3.10 installed.
 
 #### Ubuntu 13.10 (Saucy)
 ```bash
@@ -53,10 +64,10 @@ package webkit2_test
 
 import (
 	"fmt"
-	"github.com/visionect/go-webkit2/webkit2"
-	"github.com/sqs/gojs"
 	"github.com/visionect/gotk3/glib"
 	"github.com/visionect/gotk3/gtk"
+	"github.com/visionect/go-webkit2/webkit2"
+	"github.com/sqs/gojs"
 	"runtime"
 )
 
@@ -117,7 +128,7 @@ The included `webkit-eval-js` program runs the contents of a JavaScript file in 
 a web page. Run with:
 
 ```
-$ go install github.com/sourcegraph/go-webkit2/...
+$ go get -tags gtk_3_10 github.com/sourcegraph/go-webkit2/webkit-eval-js
 $ webkit-eval-js https://example.com scriptfile.js
 ```
 
@@ -136,7 +147,7 @@ The following projects use go-webkit2:
 * [WebLoop](https://sourcegraph.com/github.com/sourcegraph/webloop) - headless WebKit with a Go API
 
 See [go-webkit2
-users](https://sourcegraph.com/github.com/sourcegraph/go-webkit2/network/repos/in)
+users](https://sourcegraph.com/github.com/sourcegraph/go-webkit2/.dependents)
 for a full list of repositories and people using go-webkit2.
 
 

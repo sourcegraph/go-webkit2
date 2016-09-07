@@ -2,11 +2,12 @@ package webkit2_test
 
 import (
 	"fmt"
-	"github.com/sqs/gojs"
-	"github.com/visionect/go-webkit2/webkit2"
+	"runtime"
+
 	"github.com/visionect/gotk3/glib"
 	"github.com/visionect/gotk3/gtk"
-	"runtime"
+	"github.com/visionect/go-webkit2/webkit2"
+	"github.com/sqs/gojs"
 )
 
 func Example() {
@@ -19,8 +20,8 @@ func Example() {
 	webView.Connect("load-failed", func() {
 		fmt.Println("Load failed.")
 	})
-	webView.Connect("load-changed", func(_ *glib.Object, event int) {
-		loadEvent := webkit2.LoadEvent(event)
+	webView.Connect("load-changed", func(_ *glib.Object, i int) {
+		loadEvent := webkit2.LoadEvent(i)
 		switch loadEvent {
 		case webkit2.LoadFinished:
 			fmt.Println("Load finished.")

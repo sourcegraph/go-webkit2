@@ -4,6 +4,8 @@ package webkit2
 // #include <webkit2/webkit2.h>
 // #include <cairo/cairo.h>
 //
+//#include "cairo_endianes.h"
+//
 // static WebKitWebView* to_WebKitWebView(GtkWidget* w) { return WEBKIT_WEB_VIEW(w); }
 //
 // #cgo pkg-config: webkit2gtk-3.0
@@ -11,11 +13,12 @@ import "C"
 
 import (
 	"errors"
+	"image"
+	"unsafe"
+
 	"github.com/sqs/gojs"
 	"github.com/visionect/gotk3/glib"
 	"github.com/visionect/gotk3/gtk"
-	"image"
-	"unsafe"
 )
 
 // WebView represents a WebKit WebView.
@@ -63,7 +66,9 @@ func (v *WebView) Context() *WebContext {
 // See also: webkit_web_view_load_uri at
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#webkit-web-view-load-uri
 func (v *WebView) LoadURI(uri string) {
-	C.webkit_web_view_load_uri(v.webView, (*C.gchar)(C.CString(uri)))
+	cUri := C.CString(uri)
+	defer C.free(unsafe.Pointer(cUri))
+	C.webkit_web_view_load_uri(v.webView, (*C.gchar)(cUri))
 }
 
 // LoadHTML loads the given content string with the specified baseURI. The MIME
@@ -72,7 +77,34 @@ func (v *WebView) LoadURI(uri string) {
 // See also: webkit_web_view_load_html at
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#webkit-web-view-load-html
 func (v *WebView) LoadHTML(content, baseURI string) {
-	C.webkit_web_view_load_html(v.webView, (*C.gchar)(C.CString(content)), (*C.gchar)(C.CString(baseURI)))
+	cContent := C.CString(content)
+	defer C.free(unsafe.Pointer(cContent))
+	cBaseURI := C.CString(baseURI)
+	defer C.free(unsafe.Pointer(cBaseURI))
+	C.webkit_web_view_load_html(v.webView, (*C.gchar)(cContent), (*C.gchar)(cBaseURI))
+}
+
+// LoadAlternateHTML loads the given content string for the URI content_uri .
+// This allows clients to display page-loading errors in the WebKitWebView itself
+//
+// See also: webkit_web_view_load_alternate_html at
+// http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#webkit-web-view-load-alternate-html
+func (v *WebView) LoadAlternateHTML(content, contentURI, baseURI string) {
+	cContent := C.CString(content)
+	defer C.free(unsafe.Pointer(cContent))
+	cContentURI := C.CString(contentURI)
+	defer C.free(unsafe.Pointer(cContentURI))
+	cBaseURI := C.CString(baseURI)
+	defer C.free(unsafe.Pointer(cBaseURI))
+	C.webkit_web_view_load_alternate_html(v.webView, (*C.gchar)(cContent), (*C.gchar)(cContentURI), (*C.gchar)(cBaseURI))
+}
+
+// Reloads the current contents of web_view . See also webkit_web_view_reload_bypass_cache().
+//
+// See also: webkit_web_view_reload_html at
+// http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#webkit-web-view-reload
+func (v *WebView) Reload() {
+	C.webkit_web_view_reload(v.webView)
 }
 
 // Settings returns the current active settings of this WebView's WebViewGroup.
@@ -105,7 +137,7 @@ func (v *WebView) URI() string {
 // See also: webkit_web_view_get_javascript_global_context at
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#webkit-web-view-get-javascript-global-context
 func (v *WebView) JavaScriptGlobalContext() *gojs.Context {
-	return gojs.NewContextFrom(gojs.RawContext(C.webkit_web_view_get_javascript_global_context(v.webView)))
+	return (*gojs.Context)(gojs.NewGlobalContextFrom((gojs.RawGlobalContext)(unsafe.Pointer(C.webkit_web_view_get_javascript_global_context(v.webView)))))
 }
 
 // RunJavaScript runs script asynchronously in the context of the current page
@@ -130,9 +162,9 @@ func (v *WebView) RunJavaScript(script string, resultCallback func(result *gojs.
 				resultCallback(nil, errors.New(msg))
 				return
 			}
-			ctxRaw := gojs.RawContext(C.webkit_javascript_result_get_global_context(jsResult))
-			jsValRaw := gojs.RawValue(C.webkit_javascript_result_get_value(jsResult))
-			ctx := gojs.NewContextFrom(ctxRaw)
+			ctxRaw := gojs.RawGlobalContext(unsafe.Pointer(C.webkit_javascript_result_get_global_context(jsResult)))
+			jsValRaw := gojs.RawValue(unsafe.Pointer(C.webkit_javascript_result_get_value(jsResult)))
+			ctx := (*gojs.Context)(gojs.NewGlobalContextFrom(ctxRaw))
 			jsVal := ctx.NewValueFrom(jsValRaw)
 			resultCallback(jsVal, nil)
 		}
@@ -141,7 +173,9 @@ func (v *WebView) RunJavaScript(script string, resultCallback func(result *gojs.
 			panic(err)
 		}
 	}
-	C.webkit_web_view_run_javascript(v.webView, (*C.gchar)(C.CString(script)), nil, cCallback, userData)
+	cScript := C.CString(script)
+	defer C.free(unsafe.Pointer(cScript))
+	C.webkit_web_view_run_javascript(v.webView, (*C.gchar)(cScript), nil, cCallback, userData)
 }
 
 // Destroy destroys the WebView's corresponding GtkWidget and marks its internal
@@ -167,11 +201,26 @@ const (
 	LoadFinished
 )
 
+func (le LoadEvent) String() string {
+	switch le {
+	case LoadStarted:
+		return "load-started"
+	case LoadRedirected:
+		return "load-redirected"
+	case LoadCommitted:
+		return "load-commited"
+	case LoadFinished:
+		return "load-finished"
+	}
+
+	return "unknown"
+}
+
 // http://cairographics.org/manual/cairo-cairo-surface-t.html#cairo-surface-type-t
 const cairoSurfaceTypeImage = 0
 
 // http://cairographics.org/manual/cairo-Image-Surfaces.html#cairo-format-t
-const cairoImageSurfaceFormatARB32 = 0
+const cairoImageSurfaceFormatARGB32 = 0
 
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#WebKitSnapshotRegion
 type SnapshotRegion int
@@ -226,15 +275,25 @@ func (v *WebView) GetSnapshotCustom(region SnapshotRegion, options SnapshotOptio
 			defer C.cairo_surface_destroy(snapResult)
 
 			if C.cairo_surface_get_type(snapResult) != cairoSurfaceTypeImage ||
-				C.cairo_image_surface_get_format(snapResult) != cairoImageSurfaceFormatARB32 {
+				C.cairo_image_surface_get_format(snapResult) != cairoImageSurfaceFormatARGB32 {
 				panic("Snapshot in unexpected format")
 			}
 
 			w := int(C.cairo_image_surface_get_width(snapResult))
 			h := int(C.cairo_image_surface_get_height(snapResult))
 			stride := int(C.cairo_image_surface_get_stride(snapResult))
+			C.cairo_surface_flush(snapResult)
 			data := unsafe.Pointer(C.cairo_image_surface_get_data(snapResult))
-			rgba := &image.RGBA{C.GoBytes(data, C.int(stride*h)), stride, image.Rect(0, 0, w, h)}
+
+			//(miha) fix endianes depended byte order, and copy to go slice at the same time.
+			data_fixed := make([]byte, stride*h)
+			C.gowk2_cairo_endian_depended_ARGB32_to_RGBA((*C.uchar)(data), (*C.uchar)(&data_fixed[0]), C.uint(stride*h))
+			rgba := &image.RGBA{data_fixed, stride, image.Rect(0, 0, w, h)}
+
+			// slower but doesn't use Go pointers inside C. See https://github.com/golang/go/issues/8310 !!!!!!!
+			//C.gowk2_cairo_endian_depended_ARGB32_to_RGBA((*C.uchar)(data), C.uint(stride*h))
+			//rgba := &image.RGBA{C.GoBytes(data, C.int(stride*h)), stride, image.Rect(0, 0, w, h)}
+
 			resultCallback(rgba, nil)
 		}
 		cCallback, userData, err = newGAsyncReadyCallback(callback)

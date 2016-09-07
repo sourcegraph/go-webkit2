@@ -1,8 +1,9 @@
 package webkit2
 
 import (
-	"github.com/visionect/gotk3/gtk"
 	"runtime"
+
+	"github.com/visionect/gotk3/gtk"
 )
 
 func init() {
