@@ -1,19 +1,10 @@
 # go-webkit2
 
-[go-webkit2](https://sourcegraph.com/github.com/sourcegraph/go-webkit2/readme)
-provides [Go](http://golang.org) bindings for the [WebKitGTK+ 2
-API](http://webkitgtk.org/reference/webkit2gtk/stable/index.html). It permits
-headless operation of WebKit as well as embedding a WebView in a GTK+
-application.
+go-webkit2 provides [Go](http://golang.org) bindings for the
+[WebKitGTK+ 2 API](http://webkitgtk.org/reference/webkit2gtk/stable/index.html). It permits headless operation of WebKit
+as well as embedding a WebView in a GTK+ application.
 
 * [Documentation on Sourcegraph](https://sourcegraph.com/github.com/sourcegraph/go-webkit2/tree)
-
-[![status](https://sourcegraph.com/api/repos/github.com/sourcegraph/go-webkit2/badges/status.png)](https://sourcegraph.com/github.com/sourcegraph/go-webkit2)
-[![xrefs](https://sourcegraph.com/api/repos/github.com/sourcegraph/go-webkit2/badges/xrefs.png)](https://sourcegraph.com/github.com/sourcegraph/go-webkit2)
-[![funcs](https://sourcegraph.com/api/repos/github.com/sourcegraph/go-webkit2/badges/funcs.png)](https://sourcegraph.com/github.com/sourcegraph/go-webkit2)
-[![top func](https://sourcegraph.com/api/repos/github.com/sourcegraph/go-webkit2/badges/top-func.png)](https://sourcegraph.com/github.com/sourcegraph/go-webkit2)
-[![library users](https://sourcegraph.com/api/repos/github.com/sourcegraph/go-webkit2/badges/library-users.png)](https://sourcegraph.com/github.com/sourcegraph/go-webkit2)
-
 
 ## Requirements
 
@@ -145,10 +136,6 @@ $ echo document.title | webkit-eval-js https://google.com /dev/stdin
 The following projects use go-webkit2:
 
 * [WebLoop](https://sourcegraph.com/github.com/sourcegraph/webloop) - headless WebKit with a Go API
-
-See [go-webkit2
-users](https://sourcegraph.com/github.com/sourcegraph/go-webkit2/.dependents)
-for a full list of repositories and people using go-webkit2.
 
 
 ## Running tests

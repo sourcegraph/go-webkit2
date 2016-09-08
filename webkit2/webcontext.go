@@ -4,9 +4,10 @@ package webkit2
 // #include <webkit2/webkit2.h>
 import "C"
 import (
+	"github.com/gotk3/gotk3/glib"
 	"unsafe"
-	"github.com/visionect/gotk3/glib"
 )
+
 // WebContext manages all aspects common to all WebViews.
 //
 // See also: WebKitWebContext at
@@ -87,7 +88,6 @@ func (wc *WebContext) SetFaviconDatabaseDirectory(directory string) {
 	C.webkit_web_context_set_favicon_database_directory(wc.webContext, (*C.gchar)(cstr))
 }
 
-
 func (wc *WebContext) GetCookieManager() *CookieManager {
 	return newCookieManager(C.webkit_web_context_get_cookie_manager(wc.webContext))
 }
@@ -101,4 +101,3 @@ func (wc *WebContext) SetWebExtensionsDirectory(directory string) {
 	defer C.free(unsafe.Pointer(cstr))
 	C.webkit_web_context_set_web_extensions_directory(wc.webContext, (*C.gchar)(cstr))
 }
-

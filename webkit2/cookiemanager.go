@@ -4,9 +4,10 @@ package webkit2
 // #include <webkit2/webkit2.h>
 import "C"
 import (
+	"github.com/gotk3/gotk3/glib"
 	"unsafe"
-	"github.com/visionect/gotk3/glib"
 )
+
 // CookieManager — Defines how to handle cookies in a WebContext
 //
 // See also: WebKitCookieManager at
@@ -25,13 +26,14 @@ func newCookieManager(cookieManager *C.WebKitCookieManager) *CookieManager {
 // are described at
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitCookieManager.html#WebKitCookiePersistentStorage
 type CookiePersistentStorage int
+
 const (
 	CookiePersistentStorageText CookiePersistentStorage = iota
 	CookiePersistentStorageSqlite
 )
 
-// SetPersistentStorage sets the filename where non-session cookies are stored 
-// persistently using storage as the format to read/write the cookies. 
+// SetPersistentStorage sets the filename where non-session cookies are stored
+// persistently using storage as the format to read/write the cookies.
 //
 // See also: webkit_cookie_manager_set_persistent_storage
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitCookieManager.html#webkit-cookie-manager-set-persistent-storage
@@ -47,13 +49,14 @@ func (cm *CookieManager) SetPersistentStorage(filename string, storage CookiePer
 // are described at
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitCookieManager.html#WebKitCookieAcceptPolicy
 type CookieAcceptPolicy int
+
 const (
 	CookiePolicyAcceptAlways CookieAcceptPolicy = iota
 	CookiePolicyAcceptNever
 	CookiePolicyAcceptNoThirdParty
 )
 
-// SetAcceptPolicy set the cookie acceptance policy of CookieManager as policy . 
+// SetAcceptPolicy set the cookie acceptance policy of CookieManager as policy .
 //
 // See also: webkit_cookie_manager_set_accept_policy
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitCookieManager.html#webkit-cookie-manager-set-accept-policy
@@ -62,7 +65,7 @@ func (cm *CookieManager) SetAcceptPolicy(policy CookieAcceptPolicy) {
 		C.WebKitCookieAcceptPolicy(policy))
 }
 
-// DeleteCookiesForDomain Remove all cookies of CookieManager for the given domain. 
+// DeleteCookiesForDomain Remove all cookies of CookieManager for the given domain.
 //
 // See also: webkit_cookie_manager_delete_cookies_for_domain
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitCookieManager.html#webkit-cookie-manager-delete-cookies-for-domain
@@ -73,7 +76,7 @@ func (cm *CookieManager) DeleteCookiesForDomain(domain string) {
 		(*C.gchar)(cstr))
 }
 
-// DeleteAllCookies delete all cookies of CookieManager. 
+// DeleteAllCookies delete all cookies of CookieManager.
 //
 // See also: webkit_cookie_manager_delete_all_cookies
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitCookieManager.html#webkit-cookie-manager-delete-all-cookies
