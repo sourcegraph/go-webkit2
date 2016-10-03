@@ -1,14 +1,25 @@
 package webkit2
 
+// #include <stdlib.h>
 // #include <webkit2/webkit2.h>
 import "C"
+import (
+	"github.com/gotk3/gotk3/glib"
+	"unsafe"
+)
 
 // WebContext manages all aspects common to all WebViews.
 //
 // See also: WebKitWebContext at
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebContext.html.
 type WebContext struct {
+	*glib.Object
 	webContext *C.WebKitWebContext
+}
+
+func newWebContext(webContext *C.WebKitWebContext) *WebContext {
+	obj := &glib.Object{glib.ToGObject(unsafe.Pointer(webContext))}
+	return &WebContext{obj, webContext}
 }
 
 // DefaultWebContext returns the default WebContext.
@@ -16,7 +27,7 @@ type WebContext struct {
 // See also: webkit_web_context_get_default at
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebContext.html#webkit-web-context-get-default.
 func DefaultWebContext() *WebContext {
-	return &WebContext{C.webkit_web_context_get_default()}
+	return newWebContext(C.webkit_web_context_get_default())
 }
 
 // CacheModel describes the caching behavior.
@@ -55,4 +66,38 @@ func (wc *WebContext) SetCacheModel(model CacheModel) {
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebContext.html#webkit-web-context-clear-cache.
 func (wc *WebContext) ClearCache() {
 	C.webkit_web_context_clear_cache(wc.webContext)
+}
+
+// SetDiskCacheDirectory sets the directory where disk cache files will be stored .
+//
+// See also: webkit_web_context_set_disk_cache_directory
+// http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebContext.html#webkit-web-context-set-disk-cache-directory
+func (wc *WebContext) SetDiskCacheDirectory(directory string) {
+	cstr := C.CString(directory)
+	defer C.free(unsafe.Pointer(cstr))
+	C.webkit_web_context_set_disk_cache_directory(wc.webContext, (*C.gchar)(cstr))
+}
+
+// SetFaviconDatabaseDirectory sets the directory path to be used to store the favicons database for context on disk.
+//
+// See also: webkit_web_context_set_favicon_database_directory
+// http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebContext.html#webkit-web-context-set-favicon-database-directory
+func (wc *WebContext) SetFaviconDatabaseDirectory(directory string) {
+	cstr := C.CString(directory)
+	defer C.free(unsafe.Pointer(cstr))
+	C.webkit_web_context_set_favicon_database_directory(wc.webContext, (*C.gchar)(cstr))
+}
+
+func (wc *WebContext) GetCookieManager() *CookieManager {
+	return newCookieManager(C.webkit_web_context_get_cookie_manager(wc.webContext))
+}
+
+// SetWebExtensionsDirectory sets the directory where WebKit will look for Web Extensions.
+//
+// See also: webkit_web_context_set_web_extensions_directory
+// http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebContext.html#webkit-web-context-set-web-extensions-directory
+func (wc *WebContext) SetWebExtensionsDirectory(directory string) {
+	cstr := C.CString(directory)
+	defer C.free(unsafe.Pointer(cstr))
+	C.webkit_web_context_set_web_extensions_directory(wc.webContext, (*C.gchar)(cstr))
 }
