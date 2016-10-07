@@ -25,6 +25,8 @@ func newGAsyncReadyCallback(f interface{}) (cCallback C.GAsyncReadyCallback, use
 	if rf.Kind() != reflect.Func {
 		return nil, nil, errors.New("f is not a function")
 	}
-	cbinfo := &garCallback{rf}
+	data := C.malloc(C.size_t(unsafe.Sizeof(garCallback{})))
+	cbinfo := (*garCallback)(data)
+	cbinfo.f = rf
 	return C.GAsyncReadyCallback(C._gasyncreadycallback_call), C.gpointer(unsafe.Pointer(cbinfo)), nil
 }

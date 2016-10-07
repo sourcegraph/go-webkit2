@@ -125,6 +125,7 @@ func (v *WebView) RunJavaScript(script string, resultCallback func(result *gojs.
 	var err error
 	if resultCallback != nil {
 		callback := func(result *C.GAsyncResult) {
+			C.free(unsafe.Pointer(userData))
 			var jserr *C.GError
 			jsResult := C.webkit_web_view_run_javascript_finish(v.webView, result, &jserr)
 			if jsResult == nil {
@@ -189,6 +190,7 @@ func (v *WebView) GetSnapshot(resultCallback func(result *image.RGBA, err error)
 	var err error
 	if resultCallback != nil {
 		callback := func(result *C.GAsyncResult) {
+			C.free(unsafe.Pointer(userData))
 			var snapErr *C.GError
 			snapResult := C.webkit_web_view_get_snapshot_finish(v.webView, result, &snapErr)
 			if snapResult == nil {
