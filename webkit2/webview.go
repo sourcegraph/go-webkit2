@@ -6,7 +6,7 @@ package webkit2
 //
 // static WebKitWebView* to_WebKitWebView(GtkWidget* w) { return WEBKIT_WEB_VIEW(w); }
 //
-// #cgo pkg-config: webkit2gtk-3.0
+// #cgo pkg-config: webkit2gtk-4.0
 import "C"
 
 import (
