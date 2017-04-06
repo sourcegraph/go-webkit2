@@ -55,11 +55,12 @@ package webkit2_test
 
 import (
 	"fmt"
-	"github.com/conformal/gotk3/glib"
-	"github.com/conformal/gotk3/gtk"
+	"runtime"
+
+	"github.com/gotk3/gotk3/glib"
+	"github.com/gotk3/gotk3/gtk"
 	"github.com/sourcegraph/go-webkit2/webkit2"
 	"github.com/sqs/gojs"
-	"runtime"
 )
 
 func Example() {
@@ -72,8 +73,8 @@ func Example() {
 	webView.Connect("load-failed", func() {
 		fmt.Println("Load failed.")
 	})
-	webView.Connect("load-changed", func(ctx *glib.CallbackContext) {
-		loadEvent := webkit2.LoadEvent(ctx.Arg(0).Int())
+	webView.Connect("load-changed", func(_ *glib.Object, i int) {
+		loadEvent := webkit2.LoadEvent(i)
 		switch loadEvent {
 		case webkit2.LoadFinished:
 			fmt.Println("Load finished.")
