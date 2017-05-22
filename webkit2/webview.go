@@ -171,6 +171,20 @@ const (
 	LoadFinished
 )
 
+// SnapshotRegion specify the region from which to get a WebView snapshot
+//
+// See also: WebKitSnapshotRegion at
+// http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#WebKitSnapshotRegion.
+type SnapshotRegion int
+
+// SnapshotRegion enum values are described at
+// http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#WebKitSnapshotRegion.
+const (
+	SnapshotRegionVisible SnapshotRegion = iota
+	SnapshotRegionFullDocument
+)
+
+
 // http://cairographics.org/manual/cairo-cairo-surface-t.html#cairo-surface-type-t
 const cairoSurfaceTypeImage = 0
 
@@ -184,7 +198,7 @@ const cairoImageSurfaceFormatARGB32 = 0
 //
 // See also: webkit_web_view_get_snapshot at
 // http://webkitgtk.org/reference/webkit2gtk/stable/WebKitWebView.html#webkit-web-view-get-snapshot
-func (v *WebView) GetSnapshot(resultCallback func(result *image.RGBA, err error)) {
+func (v *WebView) GetSnapshot(snapshotRegion SnapshotRegion, resultCallback func(result *image.RGBA, err error)) {
 	var cCallback C.GAsyncReadyCallback
 	var userData C.gpointer
 	var err error
@@ -244,7 +258,7 @@ func (v *WebView) GetSnapshot(resultCallback func(result *image.RGBA, err error)
 	}
 
 	C.webkit_web_view_get_snapshot(v.webView,
-		(C.WebKitSnapshotRegion)(1), // FullDocument is the only working region at this point
+		(C.WebKitSnapshotRegion)(snapshotRegion),
 		(C.WebKitSnapshotOptions)(0),
 		nil,
 		cCallback,
