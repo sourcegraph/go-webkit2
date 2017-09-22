@@ -39,7 +39,7 @@ func Example() {
 	})
 
 	glib.IdleAdd(func() bool {
-		webView.LoadURI("https://status.github.com/")
+		webView.LoadURI("https://status.github.com/messages")
 		return false
 	})
 
@@ -48,6 +48,6 @@ func Example() {
 	// output:
 	// Load finished.
 	// Title: "GitHub System Status"
-	// URI: https://status.github.com/
+	// URI: https://status.github.com/messages
 	// Hostname (from JavaScript): "status.github.com"
 }
